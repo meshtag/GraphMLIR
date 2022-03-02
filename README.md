@@ -1,2 +1,2 @@
 # GraphMLIR
-MLIR backend for optimising graph algorithms
+An IR based solution for optimising graph algorithms.
