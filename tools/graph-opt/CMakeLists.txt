@@ -10,6 +10,6 @@ target_link_libraries(graph-opt
   ${dialect_libs}
   ${conversion_libs}
   MLIROptLib
-  GraphMLIR
+  
   LowerGraphPass
   )

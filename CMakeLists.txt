@@ -77,4 +77,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/Dialect)
 
 add_subdirectory(include)
 add_subdirectory(lib)
-add_subdirectory(examples)
+add_subdirectory(tools)
+
+if(GraphMLIR_EXAMPLES)
+  add_subdirectory(examples)
+endif()

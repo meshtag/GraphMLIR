@@ -113,7 +113,7 @@ void LowerGraphPass::runOnOperation() {
   target.addLegalDialect<AffineDialect, scf::SCFDialect, func::FuncDialect,
                          memref::MemRefDialect, VectorDialect,
                          arith::ArithmeticDialect>();
-  target.addLegalOp<ModuleOp, FuncOp, func::ReturnOp>();
+  target.addLegalOp<ModuleOp, func::FuncOp, func::ReturnOp>();
 
   RewritePatternSet patterns(context);
   populateLowerGraphConversionPatterns(patterns, stride);

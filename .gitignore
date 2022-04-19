@@ -1,0 +1,8 @@
+# Nested build directory
+/build*
+
+# vscode configurations
+/.vscode
+
+# IDEA configurations
+/.idea
