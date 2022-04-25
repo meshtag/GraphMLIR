@@ -2,7 +2,7 @@
 An IR based solution for optimising graph algorithms.
 
 ```
-git clone https://github.com/buddy-compiler/buddy-mlir.git
+git clone https://github.com/meshtag/GraphMLIR.git
 cd GraphMLIR
 git submodule update --init
 
