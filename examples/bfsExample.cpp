@@ -22,7 +22,7 @@ int main()
   intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
   intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
 
-   MemRef_descriptor sample_graph =
+  MemRef_descriptor sample_graph =
       MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
                         sample_graph_sizes, sample_graph_strides);
 

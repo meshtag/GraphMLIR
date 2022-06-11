@@ -24,7 +24,7 @@
 // Define Memref Descriptor.
 typedef struct MemRef_descriptor_ *MemRef_descriptor;
 typedef struct MemRef_descriptor_ {
-  float *allocated;
+  float *allocation_pointer;
   float *aligned;
   intptr_t offset;
   intptr_t sizes[2];
@@ -32,11 +32,11 @@ typedef struct MemRef_descriptor_ {
 } Memref;
 
 // Constructor
-MemRef_descriptor MemRef_Descriptor(float *allocated, float *aligned,
+MemRef_descriptor MemRef_Descriptor(float *allocation_pointer, float *aligned,
                                     intptr_t offset, intptr_t sizes[2],
                                     intptr_t strides[2]) {
   MemRef_descriptor n = (MemRef_descriptor)malloc(sizeof(*n));
-  n->allocated = allocated;
+  n->allocation_pointer = allocation_pointer;
   n->aligned = aligned;
   n->offset = offset;
   for (int i = 0; i < 2; i++)

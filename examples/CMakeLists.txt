@@ -16,4 +16,4 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_executable(bfsExample bfsExample.cpp)
 add_dependencies(bfsExample graph-opt)
-target_link_libraries(bfsExample ${OpenCV_LIBS} BFS)
+target_link_libraries(bfsExample BFS)
