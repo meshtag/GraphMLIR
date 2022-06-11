@@ -61,7 +61,6 @@ public:
     Value m1 = op->getOperand(0);
     Value m2 = op->getOperand(1);
     Value m3 = op->getOperand(2);
-    
 
     rewriter.eraseOp(op);
     return success();
