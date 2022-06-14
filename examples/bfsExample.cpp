@@ -7,12 +7,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include <iostream>
 #include <Interface/graph.h>
 #include <Interface/memref.h>
+#include <iostream>
 
-int main()
-{
+int main() {
   std::cout << "Reached here !!!\n";
 
   float sample_graph1_array[9] = {1, 1, 1, 1, -8, 1, 1, 1, 1};

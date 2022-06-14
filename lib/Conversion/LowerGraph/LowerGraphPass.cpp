@@ -1,4 +1,5 @@
-//====- LowerGraphPass.cpp - graph Dialect Lowering Pass  ---------------------===//
+//====- LowerGraphPass.cpp - graph Dialect Lowering Pass
+//---------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,12 +20,12 @@
 //===----------------------------------------------------------------------===//
 
 #include "mlir/Dialect/Affine/IR/AffineOps.h"
+#include "mlir/Dialect/Bufferization/Transforms/Bufferize.h"
+#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/Linalg/Transforms/Transforms.h"
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
-#include "mlir/Dialect/Func/IR/FuncOps.h"
 #include "mlir/Dialect/Vector/IR/VectorOps.h"
 #include "mlir/Pass/Pass.h"
-#include "mlir/Dialect/Bufferization/Transforms/Bufferize.h"
 
 #include "Graph/GraphDialect.h"
 #include "Graph/GraphOps.h"
@@ -72,7 +73,7 @@ private:
 } // end anonymous namespace
 
 void populateLowerGraphConversionPatterns(RewritePatternSet &patterns,
-                                        int64_t stride) {
+                                          int64_t stride) {
   patterns.add<GraphBFSLowering>(patterns.getContext(), stride);
 }
 
@@ -81,7 +82,8 @@ void populateLowerGraphConversionPatterns(RewritePatternSet &patterns,
 //===----------------------------------------------------------------------===//
 
 namespace {
-class LowerGraphPass : public PassWrapper<LowerGraphPass, OperationPass<ModuleOp>> {
+class LowerGraphPass
+    : public PassWrapper<LowerGraphPass, OperationPass<ModuleOp>> {
 public:
   LowerGraphPass() = default;
   LowerGraphPass(const LowerGraphPass &) {}

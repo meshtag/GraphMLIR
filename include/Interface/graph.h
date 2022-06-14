@@ -1,4 +1,5 @@
-//===- graph.h --------------------------------------------------------------===//
+//===- graph.h
+//--------------------------------------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,13 +30,14 @@ namespace detail {
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2, MemRef_descriptor graph3);
+void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
+                      MemRef_descriptor graph3);
 }
 } // namespace detail
 
-void graph_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2, MemRef_descriptor graph3)
-{
-    detail::_mlir_ciface_bfs(graph1, graph2, graph3);
+void graph_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
+               MemRef_descriptor graph3) {
+  detail::_mlir_ciface_bfs(graph1, graph2, graph3);
 }
 } // namespace graph
 
