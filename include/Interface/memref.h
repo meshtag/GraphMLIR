@@ -21,8 +21,8 @@
 #ifndef INCLUDE_INTERFACE_MEMREF
 #define INCLUDE_INTERFACE_MEMREF
 
-#include <cstdlib>
 #include <cstdint>
+#include <cstdlib>
 
 // Define Memref Descriptor.
 typedef struct MemRef_descriptor_ *MemRef_descriptor;
