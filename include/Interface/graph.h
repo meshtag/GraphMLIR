@@ -19,8 +19,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_DIP
-#define INCLUDE_DIP
+#ifndef INCLUDE_GRAPH
+#define INCLUDE_GRAPH
 
 #include <Interface/memref.h>
 
