@@ -18,8 +18,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_INTERFACE_MEMREF
-#define INCLUDE_INTERFACE_MEMREF
+#ifndef INCLUDE_INTERFACE_MEMREF_H
+#define INCLUDE_INTERFACE_MEMREF_H
 
 #include <cstdint>
 #include <cstdlib>

@@ -19,8 +19,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef INCLUDE_GRAPH
-#define INCLUDE_GRAPH
+#ifndef INCLUDE_INTERFACE_GRAPH_H
+#define INCLUDE_INTERFACE_GRAPH_H
 
 #include <Interface/memref.h>
 
