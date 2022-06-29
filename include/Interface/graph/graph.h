@@ -22,7 +22,7 @@
 #ifndef INCLUDE_INTERFACE_GRAPH_H
 #define INCLUDE_INTERFACE_GRAPH_H
 
-#include <Interface/memref.h>
+#include <Interface/graph/memref.h>
 
 namespace graph {
 namespace detail {
