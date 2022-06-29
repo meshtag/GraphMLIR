@@ -32,5 +32,6 @@ template <typename T, size_t N> Graph<T, N>::Graph(std::vector<Node*> adjList) :
 
     //implementation to fill the aligned
 }
-
+//explicit template instantiation 
+// template class Graph<float,1>;
 #endif // GRAPH_CONTAINER_DEF 

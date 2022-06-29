@@ -35,9 +35,11 @@ struct Node{
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
 public:
   // For Adjaceny List
+  Graph();
   Graph(std::vector<Node*> adjList);
+  ~Graph();
 };
 
-// #include "Interface/core/GraphContainer.cpp"
+#include "Interface/core/GraphContainer.cpp"
 
 #endif // INTERFACE_GRAPHCONTAINER_H 
