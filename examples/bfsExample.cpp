@@ -10,6 +10,7 @@
 #include <Interface/graph.h>
 #include <Interface/memref.h>
 #include <iostream>
+#include "Interface/GraphContainer.h"
 
 int main() {
   std::cout << "Reached here !!!\n";

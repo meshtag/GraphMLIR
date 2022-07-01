@@ -31,12 +31,17 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
     T V;
 
 public:
+  // Default Constructor
+  Graph();
   // For Adjaceny Matrix.
   Graph(T V, T** adjMatrix);
   // TODO:
   // Add Different contructors.
+  int * Insert(intptr_t N,intptr_t M , method="adjacency matrix")
+  {
+    Graph(N,M);
+  }
 };
-
-#include "lib/Interface/GraphContainer.cpp"
+#include "Interface/GraphContainer.cpp"
 
 #endif // INTERFACE_GRAPHCONTAINER_H 

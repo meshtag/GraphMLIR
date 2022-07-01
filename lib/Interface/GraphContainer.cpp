@@ -24,6 +24,10 @@
 #include "Interface/Container.h"
 #include "include/Interface/GraphContainer.h"
 
+
+// Insert Method (takes input from the user)
+ 
+
 // Adjaceny Matrix constructor.
 template <typename T, size_t N> Graph<T, N>::Graph(T V, T **adjMatrix) : MemRef<T, N>() {
     this->size[0] = V;
