@@ -43,5 +43,9 @@ template <typename T> AdjGraph<T>::AdjGraph(T V) : AdjList<T>() {
 };
 // TODO
 // Functions to fill 2d vector
+template <typename T> void AdjGraph<T>::AddEdges(T Node, std::vector<T> Edges) {
+    //Edges is a vector of vertices that vertex Node is connected to in this directed graph
+    this->nodes[Node]=Edges;
+};
 
 #endif // GRAPH_CONTAINER_DEF

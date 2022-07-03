@@ -44,6 +44,7 @@ public:
 template <typename T> class AdjGraph : public AdjList<T> {
     // V is the number of vertices/nodes.
     T V;
+// public:
     std::vector< std::vector<T> > nodes;
 
 public:
@@ -54,6 +55,7 @@ public:
 
   // TODO:
   // Add Implementation functions to take in nodes and edges
+  void AddEdges(T Node, std::vector<T> Edges);
 };
 
 #include "../lib/Interface/GraphContainer.cpp"

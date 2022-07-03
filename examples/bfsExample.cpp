@@ -21,13 +21,18 @@ int main() {
   // float *allocation_pointer = (float *)malloc(sizeof(float));
   // intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
   // intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
-  intptr_t no_of_elements;
-  std::cout<<"enter the number of elements in graph"<<std::endl;
-  std::cin>>no_of_elements;
+  intptr_t no_of_elements = 3;
+  // std::cout<<"enter the number of elements in graph"<<std::endl;
+  // std::cin>>no_of_elements;
 
   AdjGraph<float> my_graph(no_of_elements);
   //TODO for Adjacency List Directed 
   // Call functions to create graph
+  my_graph.AddEdges(0, {1,2});
+  my_graph.AddEdges(1, {2});
+  my_graph.AddEdges(2, {0});
+  // std::cout<<"Now here : "<< my_graph.nodes[0][0];
+
   // Convert data to Memref for passing in mlir
   // MemRef_descriptor sample_graph =
   //     MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
