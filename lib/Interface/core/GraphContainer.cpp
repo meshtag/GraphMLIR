@@ -21,6 +21,7 @@
 #ifndef GRAPH_CONTAINER_DEF
 #define GRAPH_CONTAINER_DEF
 
+#include <iostream>
 #include "Interface/core/Container.h"
 #include "Interface/core/GraphContainer.h"
 
@@ -44,8 +45,59 @@ template <typename T, size_t N> Graph<T, N>::Graph(AdjList_Unweighted_Undirected
     //TODO: implementation to fill the aligned
 }
 
+/* This default constructor will construct a adjacency list for a unweighted undirected graph, taking user input. */
+AdjList_Unweighted_Undirected::AdjList_Unweighted_Undirected() : AdjListUnweighted(){
+
+    intptr_t Vetrices;
+    std::cout<<"Enter the number of Vertices in the Graph: "<<std::endl;
+    std::cin>>Vetrices;
+
+    /*adjList is a vector of linked lists. The liked list at the index i will 
+    store the neighbours of the i th vertex in the graph.*/
+
+    /* This for loop will initialize the list */
+    for(intptr_t i = 0; i < Vetrices; i++){
+        NodeUnweighted* head = new NodeUnweighted;
+        head->Vertex = i;
+        head->next = nullptr;
+        ajdList.push_back(head);
+    }
+
+    int toStop = 0;
+    int counter = 0;
+    int maxNoOfEdges = (Vetrices*(Vetrices - 1))/2;
+
+    /* This while loop will take in the edges of the adjacency list. */
+    while(toStop != -1 && counter <= maxNoOfEdges) {
+        std::cout<<"Enter the edges of the graph"<<std::endl;
+        std::cout<<"After entering all the edges enter -1 for start and end value."<<std::end;
+
+
+        intptr_t start,end;
+        std::cout<<"Enter start: "<<std::endl;
+        std::cin>>start;
+        NodeUnweighted* node_start = new NodeUnweighted;
+        node_start->next = nullptr;
+        node_start->Vertex = start;
+        ajdList[start]->next = node_start;
+        
+        std::cout<<"Enter end: "<<std::endl;
+        std::cin>>end;
+        NodeUnweighted* node_end = new NodeUnweighted;
+        node_end->next = nullptr;
+        node_end->Vertex = end;
+        ajdList[end]->next = node_end;
+
+        if(start == -1 && end == -1)
+            toStop = -1;
+ 
+        counter++;
+
+        if(counter > maxNoOfEdges)
+            std::cout<<"You have reached the limit of forming edgies for a Graph with "<<Vetrices<<" no of Vertices."<<std::endl;
+    }
+}
 // TODO for adjacency List.
-//add the support for unweighted undirected
 //add the support for unweighted directed
 //add the support for weighted undirected
 //add the support for weighted directed.
