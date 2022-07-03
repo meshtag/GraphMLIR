@@ -21,20 +21,14 @@ int main() {
   // float *allocation_pointer = (float *)malloc(sizeof(float));
   // intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
   // intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
-  intptr_t no_of_elements;
-  std::cout<<"enter the number of elements in graph"<<std::endl;
-  std::cin>>no_of_elements;
-  std::vector<Node*> adjListVec;
-  Node* new_node;
-  new_node->Vertex = 4;
-  new_node->next = nullptr;
-  adjListVec.push_back(new_node);
-  
-  Graph<float, 1> my_graph(adjListVec);
 
-  MemRef_descriptor sample_graph =
-      MemRef_Descriptor(my_graph.allocated, my_graph.aligned, 0,
-                        my_graph.sizes, my_graph.strides);
+  AdjList_Unweighted_Undirected sample_AdjList;
+  Graph<float,1> sample_graph(sample_AdjList);
 
-  graph::graph_bfs(sample_graph, sample_graph, sample_graph);
+
+  // MemRef_descriptor sample_graph =
+  //     MemRef_Descriptor(my_graph.allocated, my_graph.aligned, 0,
+  //                       my_graph.sizes, my_graph.strides);
+
+  // graph::graph_bfs(sample_graph, sample_graph, sample_graph);
 }

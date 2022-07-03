@@ -25,12 +25,29 @@
 #include "Interface/core/GraphContainer.h"
 
 
-template <typename T, size_t N> Graph<T, N>::Graph(std::vector<Node*> adjList) : MemRef<T, N> {
-    this->size = adjList.size();
+template <typename T, size_t N> Graph<T, N>::Graph(AdjList_Unweighted_Undirected adjList) : MemRef<T, N> {
+
+    /* Number of vertices in the adjacency list will be the number of vertices in the graph.*/
+    this->NoOfVetrices = adjList.size();
+
+    /* allocated will hold the actual data the vertices of the graph will hold. 
+    It will be a linear array with elements of type T */
     this->allocated = new T[this->size];
+    for(intptr_t i = 0; i < adjList.size(), i++){
+        std::cout<<"Enter the Vertice "<<i<<" :";
+        std::cin>>this->allocated[i];
+    }
+
+    /* for now aligned and allocated will point to the same memory address. */
     this->aligned = this->allocated;
 
-    //implementation to fill the aligned
+    //TODO: implementation to fill the aligned
 }
+
+// TODO for adjacency List.
+//add the support for unweighted undirected
+//add the support for unweighted directed
+//add the support for weighted undirected
+//add the support for weighted directed.
 
 #endif // GRAPH_CONTAINER_DEF 

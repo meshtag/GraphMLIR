@@ -25,20 +25,64 @@
 
 // Node struct for Adjacency list representation
 
-struct Node{
+struct NodeUnweighted{
     int Vertex; 
-    Node* next;
+    NodeUnweighted* next;
 };
+
+struct NodeWeighted{
+    int Vertex,Cost;
+    NodeUnweighted* next;
+};
+
+class AdjListUnweighted {
+  public:
+  std::vector<NodeUnweighted* > ajdList;
+
+  AdjListUnweighted();
+  ~AdjListUnweighted();
+};
+
+class AdjListWeighted {
+  public:
+  std::vector<NodeWeighted* > ajdList;
+  
+  AdjListWeighted();
+  ~AdjListWeighted();
+};
+
+class AdjList_Unweighted_Undirected: public AdjListUnweighted{
+  public:
+  AdjList_Unweighted_Undirected();
+  ~AdjList_Unweighted_Undirected();
+};
+
+class AdjList_Unweighted_Directed: public AdjListUnweighted{
+
+};
+
+class AdjList_Weighted_Undirected: public AdjListWeighted{
+
+};
+
+class AdjList_Weighted_Directed: public AdjListWeighted{
+
+};
+
 // Graph container.
 // - T represents the type of the elements.
 // - N represents the number of dimensions.
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
 public:
-  // For Adjaceny List
+  //Number of vertices in the Graph.
+  intptr_t NoOfVetrices;
+  //Constructor
   Graph();
-  Graph(std::vector<Node*> adjList);
+  // Adjaceny List for unweighted and undirected graphs.
+  Graph(AdjList_Unweighted_Undirected adjList);
+  //Destructor
   ~Graph();
 };
 
-#include "Interface/core/GraphContainer.cpp"
+// #include "Interface/core/GraphContainer.cpp"
 #endif // INTERFACE_GRAPHCONTAINER_H 

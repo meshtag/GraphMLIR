@@ -51,5 +51,5 @@ public:
   // Number of elements.
   size_t size;
 };
-#include "Interface/core/Container.cpp"
+// #include "Interface/core/Container.cpp"
 #endif // INTERFACE_GRAPH_CORE_CONTAINER. 
