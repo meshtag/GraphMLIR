@@ -37,24 +37,30 @@ struct NodeWeighted{
 
 class AdjListUnweighted {
   public:
-  std::vector<NodeUnweighted* > ajdList;
+  std::vector<NodeUnweighted* > adjList;
+  intptr_t size;
 
-  AdjListUnweighted();
-  ~AdjListUnweighted();
+  AdjListUnweighted(){
+    this->size = adjList.size();
+  }
+  ~AdjListUnweighted(){};
 };
 
 class AdjListWeighted {
   public:
-  std::vector<NodeWeighted* > ajdList;
-  
-  AdjListWeighted();
-  ~AdjListWeighted();
+  std::vector<NodeWeighted* > adjList;
+  intptr_t size;
+  AdjListWeighted(){
+    this->size = adjList.size();
+  }
+  ~AdjListWeighted(){};
 };
 
-class AdjList_Unweighted_Undirected: public AdjListUnweighted{
+class AdjList_Unweighted_Undirected: public AdjListUnweighted {
+  
   public:
   AdjList_Unweighted_Undirected();
-  ~AdjList_Unweighted_Undirected();
+  ~AdjList_Unweighted_Undirected(){};
 };
 
 class AdjList_Unweighted_Directed: public AdjListUnweighted{
@@ -76,13 +82,10 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 public:
   //Number of vertices in the Graph.
   intptr_t NoOfVetrices;
-  //Constructor
-  Graph();
   // Adjaceny List for unweighted and undirected graphs.
   Graph(AdjList_Unweighted_Undirected adjList);
-  //Destructor
-  ~Graph();
+
 };
 
-// #include "Interface/core/GraphContainer.cpp"
+#include "Interface/core/GraphContainer.cpp"
 #endif // INTERFACE_GRAPHCONTAINER_H 

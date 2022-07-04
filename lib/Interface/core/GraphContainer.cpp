@@ -26,15 +26,15 @@
 #include "Interface/core/GraphContainer.h"
 
 
-template <typename T, size_t N> Graph<T, N>::Graph(AdjList_Unweighted_Undirected adjList) : MemRef<T, N> {
+template <typename T, size_t N> Graph<T, N>::Graph(AdjList_Unweighted_Undirected adjList) : MemRef<T, N>() {
 
     /* Number of vertices in the adjacency list will be the number of vertices in the graph.*/
-    this->NoOfVetrices = adjList.size();
+    this->NoOfVetrices = adjList.size;
 
     /* allocated will hold the actual data the vertices of the graph will hold. 
     It will be a linear array with elements of type T */
     this->allocated = new T[this->size];
-    for(intptr_t i = 0; i < adjList.size(), i++){
+    for(intptr_t i = 0; i < this->NoOfVetrices; i++){
         std::cout<<"Enter the Vertice "<<i<<" :";
         std::cin>>this->allocated[i];
     }
@@ -60,7 +60,7 @@ AdjList_Unweighted_Undirected::AdjList_Unweighted_Undirected() : AdjListUnweight
         NodeUnweighted* head = new NodeUnweighted;
         head->Vertex = i;
         head->next = nullptr;
-        ajdList.push_back(head);
+        adjList.push_back(head);
     }
 
     int toStop = 0;
@@ -70,7 +70,7 @@ AdjList_Unweighted_Undirected::AdjList_Unweighted_Undirected() : AdjListUnweight
     /* This while loop will take in the edges of the adjacency list. */
     while(toStop != -1 && counter <= maxNoOfEdges) {
         std::cout<<"Enter the edges of the graph"<<std::endl;
-        std::cout<<"After entering all the edges enter -1 for start and end value."<<std::end;
+        std::cout<<"After entering all the edges enter -1 for start and end value."<<std::endl;
 
 
         intptr_t start,end;
@@ -79,14 +79,14 @@ AdjList_Unweighted_Undirected::AdjList_Unweighted_Undirected() : AdjListUnweight
         NodeUnweighted* node_start = new NodeUnweighted;
         node_start->next = nullptr;
         node_start->Vertex = start;
-        ajdList[start]->next = node_start;
+        adjList[start]->next = node_start;
         
         std::cout<<"Enter end: "<<std::endl;
         std::cin>>end;
         NodeUnweighted* node_end = new NodeUnweighted;
         node_end->next = nullptr;
         node_end->Vertex = end;
-        ajdList[end]->next = node_end;
+        adjList[end]->next = node_end;
 
         if(start == -1 && end == -1)
             toStop = -1;
@@ -97,6 +97,7 @@ AdjList_Unweighted_Undirected::AdjList_Unweighted_Undirected() : AdjListUnweight
             std::cout<<"You have reached the limit of forming edgies for a Graph with "<<Vetrices<<" no of Vertices."<<std::endl;
     }
 }
+
 // TODO for adjacency List.
 //add the support for unweighted directed
 //add the support for weighted undirected

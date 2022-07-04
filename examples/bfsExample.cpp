@@ -25,7 +25,6 @@ int main() {
   AdjList_Unweighted_Undirected sample_AdjList;
   Graph<float,1> sample_graph(sample_AdjList);
 
-
   MemRef_descriptor sample_graph_memref =
       MemRef_Descriptor(sample_graph.allocated, sample_graph.aligned, 0,
                         sample_graph.sizes, sample_graph.strides);

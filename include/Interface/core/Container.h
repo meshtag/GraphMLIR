@@ -40,8 +40,8 @@ public:
   // The `aligned` and `allocated` members point to the same address, `aligned`
   // member is responsible for handling data, and `allocated` member is
   // resposible for handling the memory space.
-  T *allocated = nullptr;
-  T *aligned = nullptr;
+  T *allocated;
+  T *aligned;
   // Offset.
   intptr_t offset = 0;
   // Shape.
@@ -51,5 +51,5 @@ public:
   // Number of elements.
   size_t size;
 };
-// #include "Interface/core/Container.cpp"
+#include "Interface/core/Container.cpp"
 #endif // INTERFACE_GRAPH_CORE_CONTAINER. 
