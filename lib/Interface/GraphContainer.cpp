@@ -28,16 +28,33 @@
 // Insert Method (takes input from the user)
  
 
-// Adjaceny Matrix constructor.
-template <typename T, size_t N> Graph<T, N>::Graph(T V, T **adjMatrix) : MemRef<T, N>() {
-    this->size[0] = V;
-    this->size[1] = V;
-    this->strides[0] = V;
-    this->strides[1] = V;
-    this->allocated = new T[this->size];
-    //TODO
-    // Add the implementation for passing data to alignned.
+// Incidence Matrix constructor.
+template <typename T, size_t N> Graph<T, N>::Graph(int64_t vertices,int64_t edges) {
+
+  this->V = vertices;
+  this->E = edges;
 };
+
+ template<typename T,size_t N> int ** Graph<T,N>::Insert(int64_t edges,int64_t vertices, std::string method="incidence",std::string type="undirected")
+{
+   Graph(vertices,edges);
+   Matrix = new int *[vertices+1];
+   for(int i =0;i<vertices;i++)
+   {
+    Matrix[i] = new int[edges+1];
+   }
+   for(int j=1;j<=edges;++j)
+   { int x,y;
+    std::cout<<"Enter the vertices for edges"<<std::endl;
+    std::cin>>x>>y:
+    std::endl;
+    Matrix[x][j] = 1;
+    Matrix[y][j] = 1;
+  }
+    return Matrix;
+}
+
+
 
 
 // TODO

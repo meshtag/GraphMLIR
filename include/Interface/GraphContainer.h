@@ -28,20 +28,18 @@
 // - N represents the number of dimensions.
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
     // V is the number of vertices/nodes.
-    T V;
+    int64_t V,E;
+    int ** Matrix;
 
 public:
   // Default Constructor
   Graph();
   // For Adjaceny Matrix.
-  Graph(T V, T** adjMatrix);
+  Graph(int64_t vertices, int64_t edges);
+
   // TODO:
   // Add Different contructors.
-  int * Insert(intptr_t N,intptr_t M , method="adjacency matrix")
-  {
-    Graph(N,M);
-  }
-};
+ int ** Insert(int64_t edges, int64_t vertices, std::string method="incidence",std::string type="undirected");
 #include "Interface/GraphContainer.cpp"
 
 #endif // INTERFACE_GRAPHCONTAINER_H 
