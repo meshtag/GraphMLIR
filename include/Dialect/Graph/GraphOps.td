@@ -31,14 +31,10 @@ def Graph_BFSOp : Graph_Op<"bfs">
   }];
 
   let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "inputMemref",
-                           [MemRead]>:$memrefI,
-                       Arg<AnyRankedOrUnrankedMemRef, "kernelMemref",
-                           [MemRead]>:$memrefK,
-                       Arg<AnyRankedOrUnrankedMemRef, "outputMemref",
-                           [MemRead]>:$memrefCO);
+                           [MemRead]>:$memrefI);
 
   let assemblyFormat = [{
-    $memrefI `,` $memrefK `,` $memrefCO attr-dict `:` type($memrefI) `,` type($memrefK) `,` type($memrefCO) 
+    $memrefI attr-dict `:` type($memrefI) 
   }];
 }
 
