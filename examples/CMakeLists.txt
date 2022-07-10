@@ -11,8 +11,7 @@ BFS
 PROPERTIES
 LINKER_LANGUAGE C)
 
-find_package(OpenCV REQUIRED CONFIG)
-include_directories(${OpenCV_INCLUDE_DIRS})
+
 
 add_executable(bfsExample bfsExample.cpp)
 add_dependencies(bfsExample graph-opt)
