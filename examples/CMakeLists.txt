@@ -16,3 +16,7 @@ LINKER_LANGUAGE C)
 add_executable(bfsExample bfsExample.cpp)
 add_dependencies(bfsExample graph-opt)
 target_link_libraries(bfsExample BFS)
+
+add_executable(bfsExample_temp bfsExample_temp.cpp)
+add_dependencies(bfsExample_temp graph-opt)
+target_link_libraries(bfsExample_temp BFS)

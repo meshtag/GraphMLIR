@@ -12,5 +12,7 @@ int main() {
     g.addEdge(2, 3);
     g.addEdge(3, 3);
 
-    
+    g.graph_type = graph::detail::GRAPH_TYPE::ADJACENCY_LIST;
+
+    graph::detail::ConvertGraphToMemRef(g);
 }
