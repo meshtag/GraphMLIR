@@ -23,6 +23,22 @@
 
 include "GraphDialect.td"
 include "mlir/Interfaces/SideEffectInterfaces.td"
+include "mlir/Interfaces/SideEffectInterfaces.td"
+include "mlir/IR/EnumAttr.td"
+include "mlir/IR/OpBase.td"
+
+def Graph_DFS_Detect_Cycle : I32EnumAttrCase<"DetectCycle", 0, "DETECT_CYCLE">;
+
+def Graph_DFS_Modification : I32EnumAttr<"DFS_Modification",
+    "Specifies desired modification on top of depth first search algorithm.",
+    [
+      Graph_DFS_Detect_Cycle
+    ]>{
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::graph";
+}
+
+// def Graph_DFS_ModificationAttr : EnumAttr<Graph_Dialect, Graph_DFS_Modification, "dfs_modification">;
 
 def Graph_BFSOp : Graph_Op<"bfs">
 {

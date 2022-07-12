@@ -1,5 +1,4 @@
-//===- GraphOps.h - graph Dialect Ops -------------------------------*- C++
-//-*-===//
+//===- GraphOps.h - graph Dialect Ops -----------------------------*- C++*-===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +25,12 @@
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/OpDefinition.h"
 #include "mlir/Interfaces/SideEffectInterfaces.h"
+#include "mlir/Interfaces/InferTypeOpInterface.h"
+
+// #include "Graph/GraphOpsEnums.h.inc"
+
+// #define GET_ATTRDEF_CLASSES
+// #include "Graph/GraphOpsAttributes.h.inc"
 
 #define GET_OP_CLASSES
 #include "Graph/GraphOps.h.inc"

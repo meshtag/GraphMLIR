@@ -59,9 +59,11 @@ public:
     Value c1 = rewriter.create<ConstantIndexOp>(loc, 1);
 
     // Register operand values.
-    Value m1 = op->getOperand(0);
-    // Value m2 = op->getOperand(1);
-    // Value m3 = op->getOperand(2);
+    Value graph = op->getOperand(0);
+    // Value modification = op.dfs_modification();
+
+    Value numNodes = rewriter.create<memref::DimOp>(loc, graph, c0);
+    
 
     rewriter.eraseOp(op);
     return success();

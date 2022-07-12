@@ -31,20 +31,18 @@ namespace graph {
 class Graph;
 
 namespace detail {
-enum class GRAPH_TYPE { ADJACENCY_LIST };
+enum class GRAPH_TYPE { ADJACENCY_LIST_UNDIRECTED_UNWEIGHTED };
 
 // Functions present inside graph::detail are not meant to be called by users
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-                      MemRef_descriptor graph3);
+void _mlir_ciface_bfs_cycle_detection(MemRef_descriptor graph);
 }
 } // namespace detail
 
-void graph_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-               MemRef_descriptor graph3) {
-  detail::_mlir_ciface_bfs(graph1, graph2, graph3);
+void graph_bfs_cycle_detection(MemRef_descriptor graph) {
+  detail::_mlir_ciface_bfs_cycle_detection(graph);
 }
 
 class Graph {
@@ -66,12 +64,11 @@ void Graph::addEdge(int v, int w)
 }
 
 namespace detail {
-
-void ConvertGraphToMemRef(Graph g)
+MemRef_descriptor ConvertGraphToMemRef(Graph g)
 {
   switch(g.graph_type)
   {
-    case GRAPH_TYPE::ADJACENCY_LIST:
+    case GRAPH_TYPE::ADJACENCY_LIST_UNDIRECTED_UNWEIGHTED:
     {
       intptr_t graphSize[2] = {g.adj.size(), g.adj.size()};
       intptr_t graphStrides[2] = {g.adj.size(), g.adj.size()};
@@ -84,11 +81,10 @@ void ConvertGraphToMemRef(Graph g)
 
       for (unsigned int i = 0; i < graphSize[0]; ++i)
       {
-        graphAlign[i * graphSize[0]] = i;
         for (auto val = g.adj[i].begin(); val != g.adj[i].end(); ++val)
         {
-          if (*val)
             graphAlign[i * graphSize[0] + *val] = 1;
+            graphAlign[*val * graphSize[0] + i] = 1;
         }
       }
 
@@ -98,12 +94,6 @@ void ConvertGraphToMemRef(Graph g)
           graphAlign[i] = 0;
       }
 
-      // for (unsigned int i = 0; i < graphSize[0] * graphSize[1]; ++i)
-      // {
-      //   std::cout << graphAlign[i] << " ";
-      // }
-      // std::cout << "\n";
-
       for (unsigned int i = 0; i < graphSize[0]; ++i)
       {
         for (unsigned int j = 0; j < graphSize[1]; ++j)
@@ -112,9 +102,10 @@ void ConvertGraphToMemRef(Graph g)
       }
       std::cout << "\n\n";
 
-      // MemRef_descriptor graphMemRef =
-      //     MemRef_Descriptor(allocationPointer, sample_graph1_array, 0,
-      //                   sample_graph_sizes, sample_graph_strides);
+      MemRef_descriptor graphMemRef =
+          MemRef_Descriptor(allocationPointer, graphAlign, 0,
+                        graphSize, graphStrides);
+      return graphMemRef;
     }
   }
 }
