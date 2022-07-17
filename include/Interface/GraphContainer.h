@@ -39,7 +39,14 @@ public:
 
   // TODO:
   // Add Different contructors.
- int ** Insert(int64_t edges, int64_t vertices, std::string method="incidence",std::string type="undirected");
+ int ** Insert(int64_t edges, int64_t vertices, std::string method="incidence",std::string type="undirected",int64_t weighted=0);
+
+ int ** Insert(int64_t edges, int64_t vertices, std::string method = "incidence", std::string type ="directed",int64_t weighted=0);
+
+  int ** Insert(int64_t edges, int64_t vertices, std::string method = "incidence", std::string type ="undirected",int64_t weighted=1);
+
+   int ** Insert(int64_t edges, int64_t vertices, std::string method = "incidence", std::string type ="directed",int64_t weighted=1);
+
 #include "Interface/GraphContainer.cpp"
 
 #endif // INTERFACE_GRAPHCONTAINER_H 

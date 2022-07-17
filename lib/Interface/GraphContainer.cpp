@@ -54,7 +54,7 @@ template <typename T, size_t N> Graph<T, N>::Graph(int64_t vertices,int64_t edge
     return Matrix;
 }
 
- template<typename T,size_t N> int ** Graph<T,N>::Insert(int64_t edges,int64_t vertices, std::string method="incidence",std::string type="undirected")
+ template<typename T,size_t N> int ** Graph<T,N>::Insert(int64_t edges,int64_t vertices, std::string method="incidence",std::string type="directed")
 {
    Graph(vertices,edges);
    Matrix = new int *[vertices+1];
@@ -72,6 +72,45 @@ template <typename T, size_t N> Graph<T, N>::Graph(int64_t vertices,int64_t edge
   }
     return Matrix;
 }
+
+template<typename T,size_t N> int ** Graph<T,N>::Insert(int64_t edges,int64_t vertices, std::string method="incidence",std::string type="directed")
+{
+   Graph(vertices,edges);
+   Matrix = new int *[vertices+1];
+   for(int i =0;i<vertices;i++)
+   {
+    Matrix[i] = new int[edges+1];
+   }
+   for(int j=1;j<=edges;++j)
+   { int x,y,w;
+    std::cout<<"Enter the vertices for edges and the weight if the edge"<<std::endl;
+    std::cin>>x>>y>>w:
+    std::endl;
+    Matrix[x][j] = w;  // This shows edge is going away from x node
+    Matrix[y][j] = -w; // This shows edge is coming into y node 
+  }
+    return Matrix;
+}
+
+template<typename T,size_t N> int ** Graph<T,N>::Insert(int64_t edges,int64_t vertices, std::string method="incidence",std::string type="undirected")
+{
+   Graph(vertices,edges);
+   Matrix = new int *[vertices+1];
+   for(int i =0;i<vertices;i++)
+   {
+    Matrix[i] = new int[edges+1];
+   }
+   for(int j=1;j<=edges;++j)
+   { int x,y,w;
+    std::cout<<"Enter the vertices for edges and the weight if the edge"<<std::endl;
+    std::cin>>x>>y>>w:
+    std::endl;
+    Matrix[x][j] = w;  // This shows edge is going away from x node
+    Matrix[y][j] = w; // This shows edge is coming into y node 
+  }
+    return Matrix;
+}
+
 
 
 
