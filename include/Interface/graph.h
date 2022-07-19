@@ -26,6 +26,18 @@
 
 namespace graph {
 namespace detail {
+
+enum graph_type {
+  GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED,
+  GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_LIST_DIRECTED_WEIGHTED,
+  GRAPH_ADJ_MATRIX_UNDIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
+  GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
+};
+
 // Functions present inside graph::detail are not meant to be called by users
 // directly.
 // Declare the BFS C interface.
