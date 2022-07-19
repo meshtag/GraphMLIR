@@ -25,13 +25,16 @@ int main() {
   // std::cout<<"enter the number of elements in graph"<<std::endl;
   // std::cin>>no_of_elements;
 
-  AdjGraph<float> my_graph(no_of_elements);
+  Graph<float, 2> my_graph(3, no_of_elements);
+  std::cout<<"Now here : \n";
   //TODO for Adjacency List Directed 
   // Call functions to create graph
-  my_graph.AddEdges(0, {1,2});
-  my_graph.AddEdges(1, {2});
-  my_graph.AddEdges(2, {0});
-  // std::cout<<"Now here : "<< my_graph.nodes[0][0];
+  my_graph.AddEdge(0, 1, 2);
+  my_graph.AddEdge(0, 2, 3);
+  my_graph.AddEdge(1, 2, 4);
+  my_graph.AddEdge(2, 0, 6);
+  std::cout<<"Now here : \n";
+  my_graph.PrintGraph();
 
   // Convert data to Memref for passing in mlir
   // MemRef_descriptor sample_graph =
