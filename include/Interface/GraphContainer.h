@@ -22,23 +22,24 @@
 #define INTERFACE_GRAPHCONTAINER_H
 
 #include "Interface/Container.h"
+#include "Interface/memref.h"
+#include <cstddef>
 #include <iostream>
 
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
 	public:
 		//the graph type and representation
-		uint16_t grap_type;
-		long unsigned int graph_size;
+		uint16_t graph_type;
 		int edgeCount = 0;
 		
-		T *graphInternal;
-		
 		std::vector<std::vector<T>> adjList;
-	
-		Graph(uint16_t graph_type);
+		Graph(uint16_t graph_type, size_t size);
 		void addEdge(int a, int b);
 		void printGraph();
 };
+
+template<typename T, size_t N>
+MemRef_descriptor graph_to_MemRef_descriptor(Graph<T, N> &graph);
 
 #include "Interface/GraphContainer.cpp"
 #endif // INTERFACE_GRAPHCONTAINER_H 

@@ -15,21 +15,13 @@
 #include <iostream>
 
 int main() {
-  // float sample_graph1_array[9] = {1, 1, 1, 1, -8, 1, 1, 1, 1};
-  // intptr_t sample_graph_length = 3;
-  // intptr_t sample_graph_width = 3;
-  // float *allocation_pointer = (float *)malloc(sizeof(float));
-  // intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
-  // intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
   
-  Graph<float, 4> sample_graph(graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED);
-
-  sample_graph.addEdge(0,1);
-  sample_graph.addEdge(0,2);
-  sample_graph.addEdge(1,2);
-  sample_graph.addEdge(2,0);
-  sample_graph.addEdge(2,3);
-  sample_graph.addEdge(3,3);
-
-  sample_graph.printGraph();
+  	Graph<float, 2> sample_graph(graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED, 4);	
+	sample_graph.addEdge(0,1);
+	sample_graph.addEdge(0,2);
+	sample_graph.addEdge(1,2);
+	sample_graph.addEdge(2,3);
+	sample_graph.addEdge(3,2);
+	
+	auto memref = graph_to_MemRef_descriptor(sample_graph);
 }
