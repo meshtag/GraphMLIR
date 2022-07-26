@@ -22,6 +22,8 @@
 #define INTERFACE_GRAPHCONTAINER_H
 
 #include "Interface/Container.h"
+#include "Interface/memref.h"
+#include <cstddef>
 #include <iostream>
 
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
@@ -34,6 +36,9 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 		void addEdge(int a, int b);
 		void printGraph();
 };
+
+template<typename T, size_t N>
+MemRef_descriptor graph_to_MemRef_descriptor(Graph<T, N> &graph);
 
 #include "Interface/GraphContainer.cpp"
 #endif // INTERFACE_GRAPHCONTAINER_H 

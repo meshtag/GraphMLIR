@@ -37,6 +37,7 @@ enum graph_type {
   GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED,
   GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
 };
+
 // Functions present inside graph::detail are not meant to be called by users
 // directly.
 // Declare the BFS C interface.

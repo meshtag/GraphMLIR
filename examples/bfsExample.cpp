@@ -16,13 +16,15 @@
 
 int main() {
   
-  Graph<float, 4> sample_graph(graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED);
-
-  sample_graph.addEdge(0,1);
-  sample_graph.addEdge(0,2);
-  sample_graph.addEdge(1,2);
-  sample_graph.addEdge(2,0);
-  sample_graph.addEdge(2,3);
-  sample_graph.addEdge(3,3);
-
+  	Graph<float, 2> sample_graph(graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED, 4);	
+	 
+	sample_graph.addEdge(0,2);
+	sample_graph.addEdge(1,2);
+	sample_graph.addEdge(2,3);
+	sample_graph.addEdge(3,2);
+	
+	auto memref = graph_to_MemRef_descriptor(sample_graph);
+	
+	//this will print the linear 2d matrix in 2d form.
+	sample_graph.printGraph();
 }

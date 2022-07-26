@@ -24,11 +24,18 @@
 #include "Interface/GraphContainer.h"
 #include "Interface/Container.h"
 #include "Interface/graph.h"
-#include <cstddef>
 
 template <typename T, size_t N> Graph<T, N>::Graph(uint16_t graph_type, size_t size) {
 	
 	this->graph_type = graph_type;
+
+	// Assign the memebers of MefRef.
+	this->size = size;
+	this->allocated = (T *)malloc(sizeof(T));
+	this->sizes[0] = size;
+	this->sizes[1] = size;
+	this->strides[0] = size;
+	this->strides[1] = size;
 
 	switch (graph_type) {
 		case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED:
@@ -65,12 +72,71 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(int p, int q) {
 }
 
 template <typename T, size_t N> void Graph<T, N>::printGraph() {
-	for (int v = 0; v < this->graph_size; ++v) {
-		std::cout << "\n Adjacency list of vertex " << v << "\n head ";
-		for (auto x : this->adjList[v])
-			 std::cout << "-> " << x;
-		printf("\n");
+	intptr_t size = this->size;
+	for (int v = 0; v < this->sizes[0]; ++v) {
+		for (int w = 0; w < this->sizes[1]; ++w) {
+			std::cout<<this->aligned[this->sizes[0]*v + w]<<" ";
+		}
+		std::cout<<std::endl;
 	}
+}
+
+
+//This funciton will convert the graph implementation to linear 2d matrix
+template<typename T, size_t N>
+void graph_container_to_linear_2d(Graph<T, N> &g) {
+
+	intptr_t x = g.sizes[0];
+	intptr_t y = g.sizes[1];
+	T* linear = (T *)malloc(sizeof(T) * x * y);
+
+	for (intptr_t i = 0; i < x; i++){
+		for (intptr_t j = 0; j < y; j++) {
+			linear[i * x + j] = 0;
+		}
+	}
+	
+	switch (g.graph_type) {
+		case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED:
+
+			for (intptr_t i = 0; i < g.adjList.size(); i++){
+				for (intptr_t j = 0; j < g.adjList[i].size(); j++) {
+
+					T n = g.adjList[i][j];	
+					linear[i * x + (int)n] = 1;
+					linear[(int)n * x + i] = 1;
+				}
+			}
+			break;
+
+		case graph::detail::GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED: 
+			
+			for (intptr_t i = 0; i < g.adjList.size(); i++){
+				for (intptr_t j = 0; j < g.adjList[i].size(); j++) {
+
+					T n = g.adjList[i][j];
+					linear[i * x + (int)n] = 1;
+				}
+			}
+			break;
+		
+		//TODO- For default add edges into adjacency matrix.
+		default:
+			std::cout<<"Unknown graph type"<<std::endl;
+	}
+
+	g.aligned = linear;
+}
+
+template< typename T, size_t N>
+MemRef_descriptor graph_to_MemRef_descriptor(Graph<T, N> &graph) {
+
+	graph_container_to_linear_2d(graph); 
+
+	MemRef_descriptor sample_graph_memref = MemRef_Descriptor(graph.allocated, graph.aligned, graph.offset,
+							graph.sizes, graph.strides);
+
+	return sample_graph_memref;
 }
 
 #endif // GRAPH_CONTAINER_DEF
