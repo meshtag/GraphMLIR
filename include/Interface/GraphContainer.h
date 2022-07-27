@@ -31,12 +31,12 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 		//the graph type and representation
 		uint16_t graph_type;
 		int64_t edgeCount = 0;
-        int64_t verticeCount = 0;
-		int64_t ** IncidenceMat;
+		std::vector<std::vector<T>> IncidenceMat;
 		Graph(uint16_t graph_type, size_t size);
 		void addEdge(int a, int b);
 		void printGraph();
-        int Noofedges();
+        void IsEdge(int a, int b);
+        void numvertices();
 
 };
 
