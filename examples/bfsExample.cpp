@@ -6,7 +6,7 @@
 #include <iostream>
 
 int main() {
-  std::cout << "Reached here !!!\n";
+  /*std::cout << "Reached here !!!\n";
 
   float sample_graph1_array[9] = {1, 1, 1, 1, -8, 1, 1, 1, 1};
   intptr_t sample_graph_length = 3;
@@ -19,9 +19,9 @@ int main() {
       MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
                         sample_graph_sizes, sample_graph_strides);
 
-  graph::graph_bfs(sample_graph, sample_graph, sample_graph);
+  graph::graph_bfs(sample_graph, sample_graph, sample_graph);*/
 
-  	Graph<float, 2> sample_graph(graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED, 4);	
+  	Graph<float, 2> sample_graph(graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED, 4);	
 
 	sample_graph.addEdge(0,2);
 	sample_graph.addEdge(1,2);

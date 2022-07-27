@@ -27,7 +27,7 @@
 namespace graph {
 namespace detail {
 
-  enum class graph_type {
+  enum graph_type {
       GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED,
   GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED,
   GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED,

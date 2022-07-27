@@ -29,6 +29,7 @@
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
 	public:
 		//the graph type and representation
+	
 		uint16_t graph_type;
 		int64_t edgeCount = 0;
 		std::vector<std::vector<T>> IncidenceMat;
