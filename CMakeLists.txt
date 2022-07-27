@@ -50,6 +50,7 @@ set(GraphMLIR_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(GraphMLIR_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(GraphMLIR_EXAMPLES_DIR ${GraphMLIR_SOURCE_DIR}/examples)
 set(GraphMLIR_INCLUDE_DIR ${GraphMLIR_SOURCE_DIR}/include/)
+set(GraphMLIR_SOURCE_DIR ${GraphMLIR_SOURCE_DIR}/lib)
 
 set(GraphMLIR_OPT_ATTR avx2 CACHE STRING "Target Architecture.")
 set(GraphMLIR_OPT_TRIPLE x86_64-unknown-linux-gnu CACHE STRING "Target Triple.")
