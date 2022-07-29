@@ -10,20 +10,37 @@
 #include <Interface/graph.h>
 #include <Interface/memref.h>
 #include <iostream>
+#include "../lib/Interface/GraphContainer.cpp"
 
 int main() {
   std::cout << "Reached here !!!\n";
 
-  float sample_graph1_array[9] = {1, 1, 1, 1, -8, 1, 1, 1, 1};
-  intptr_t sample_graph_length = 3;
-  intptr_t sample_graph_width = 3;
-  float *allocation_pointer = (float *)malloc(sizeof(float));
-  intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
-  intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
+  // float sample_graph1_array[9] = {1, 1, 1, 1, -8, 1, 1, 1, 1};
+  // intptr_t sample_graph_length = 3;
+  // intptr_t sample_graph_width = 3;
+  // float *allocation_pointer = (float *)malloc(sizeof(float));
+  // intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
+  // intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
+  intptr_t no_of_elements = 3;
+  // std::cout<<"enter the number of elements in graph"<<std::endl;
+  // std::cin>>no_of_elements;
 
-  MemRef_descriptor sample_graph =
-      MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
-                        sample_graph_sizes, sample_graph_strides);
+  Graph<float, 2> my_graph(3, no_of_elements);
+  std::cout<<"Now here : \n";
+  //TODO for Adjacency List Directed 
+  // Call functions to create graph
+  my_graph.AddEdge(0, 1, 2);
+  my_graph.AddEdge(0, 2, 3);
+  my_graph.AddEdge(1, 2, 4);
+  my_graph.AddEdge(2, 0, 6);
+  std::cout<<"Now here : \n";
+  my_graph.PrintGraph();
 
-  graph::graph_bfs(sample_graph, sample_graph, sample_graph);
+  GraphToMemrefConversion(my_graph);
+  // Convert data to Memref for passing in mlir
+  // MemRef_descriptor sample_graph =
+  //     MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
+  //                       sample_graph_sizes, sample_graph_strides);
+
+  // graph::graph_bfs(sample_graph, sample_graph, sample_graph);
 }
