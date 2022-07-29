@@ -36,6 +36,7 @@ int main() {
   std::cout<<"Now here : \n";
   my_graph.PrintGraph();
 
+  GraphToMemrefConversion(my_graph);
   // Convert data to Memref for passing in mlir
   // MemRef_descriptor sample_graph =
   //     MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,

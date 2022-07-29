@@ -33,6 +33,8 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
     T V;
     std::vector< std::vector<T> > nodes;
     std::vector< std::vector<std::pair<T,T> > > weighted_nodes;
+
+    friend MemRef_Descriptor GraphToMemrefConversion(Graph g);
 public:
   // Constructor for any graph type with V nodes .
   Graph(uint16_t graph_type, T V);
@@ -44,6 +46,8 @@ public:
   void AddEdge(T Node1,T Node2, T EdgeWeight); 
   //debugging function
   void PrintGraph();
+
+  
   // TODO: Add more implementation functions
 };
 

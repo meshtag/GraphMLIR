@@ -49,6 +49,8 @@ protected:
   intptr_t strides[N];
   // Number of elements.
   size_t size;
+
+  friend MemRef_Descriptor GraphToMemrefConversion(Graph g);
 };
 
 

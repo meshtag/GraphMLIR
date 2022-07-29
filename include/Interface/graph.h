@@ -23,10 +23,11 @@
 #define INCLUDE_INTERFACE_GRAPH_H
 
 #include <Interface/memref.h>
-
+#include <iostream>
 namespace graph {
 namespace detail {
-
+// Functions present inside graph::detail are not meant to be called by users
+// directly.
 enum graph_type {
   GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED,
   GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED,
@@ -37,8 +38,52 @@ enum graph_type {
   GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED,
   GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
 };
-// Functions present inside graph::detail are not meant to be called by users
-// directly.
+
+// // // creating function to convert to MemRef 
+// // // that takes in instance of Graph class as input
+// template <typename T, size_t N> MemRef_descriptor GraphToMemrefConversion (graph::Graph<T,N> g)
+// {
+//   switch(g.grap_type)
+//   {
+//     // case to convert Directed Unweighted Adj_List  
+//     case graph_type::GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED:
+//     {
+//       // allocating memory and member data types to store 
+//       // new created adjacency matrix
+//       intptr_t graphSize[2] = {g.size , g.size};
+//       intptr_t graphStrides[2] = {g.size , g.size};
+//       float *allocationPointer =  (float *)malloc(sizeof(float));
+//       // Storing a 2d-matrix in a 1-d format to store as memref
+//       // do for example a 3x3 matrix becomes a matrix of 9 elements 
+//       float *graphAlign = (float *)malloc(graphSize[0] * graphSize[1] * sizeof(float));
+      
+//       for(unsigned int i=0; i< graphSize[0]; ++i)
+//         for(unsigned int j = 0; j < graphSize[1]; ++j)
+//           // first making all edges as zero
+//           graphAlign[i * graphSize[0] + j] = 0;
+
+//       // accessing adjacency list
+//       for (unsigned int i = 0; i < graphSize[0]; ++i)
+//       {
+//         for (auto x : g.nodes[i])
+//         {
+//           graphAlign[i * graphSize[0] + x] = 1;
+//         }
+//       }
+
+//       //printing adjacency matrix for debug
+//       for(unsigned int i=0; i< graphSize[0]; ++i)
+//       {
+//         for(unsigned int j = 0; j < graphSize[1]; ++j)
+//           // first making all edges as zero
+//           std::cout<<graphAlign[i * graphSize[0] + j];
+//         std::cout<<"\n";
+//       }
+//       std::cout<<"\n \n";
+//   }
+//   break;
+// }
+// }
 // Declare the BFS C interface.
 extern "C" {
 void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,

@@ -63,6 +63,54 @@ template <typename T, size_t N> void Graph<T, N>::AddEdge(T Node1,T Node2, T Edg
         
     }
 };
+
+// // creating function to convert to MemRef 
+// // that takes in instance of Graph class as input
+template <typename T, size_t N> MemRef_descriptor GraphToMemrefConversion (Graph<T,N> g)
+{
+  uint16_t graph_type = 
+  switch(g.grap_type)
+  {
+    // case to convert Directed Unweighted Adj_List  
+    case graph_type::GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED:
+    {
+      // allocating memory and member data types to store 
+      // new created adjacency matrix
+      intptr_t graphSize[2] = {g.size , g.size};
+      intptr_t graphStrides[2] = {g.size , g.size};
+      float *allocationPointer =  (float *)malloc(sizeof(float));
+      // Storing a 2d-matrix in a 1-d format to store as memref
+      // do for example a 3x3 matrix becomes a matrix of 9 elements 
+      float *graphAlign = (float *)malloc(graphSize[0] * graphSize[1] * sizeof(float));
+      
+      for(unsigned int i=0; i< graphSize[0]; ++i)
+        for(unsigned int j = 0; j < graphSize[1]; ++j)
+          // first making all edges as zero
+          graphAlign[i * graphSize[0] + j] = 0;
+
+      // accessing adjacency list
+      for (unsigned int i = 0; i < graphSize[0]; ++i)
+      {
+        for (auto x : g.nodes[i])
+        {
+          graphAlign[i * graphSize[0] + x] = 1;
+        }
+      }
+
+      //printing adjacency matrix for debug
+      for(unsigned int i=0; i< graphSize[0]; ++i)
+      {
+        for(unsigned int j = 0; j < graphSize[1]; ++j)
+          // first making all edges as zero
+          std::cout<<graphAlign[i * graphSize[0] + j];
+        std::cout<<"\n";
+      }
+      std::cout<<"\n \n";
+  }
+  break;
+}
+}
+
 template <typename T, size_t N> void Graph<T, N>::PrintGraph(){
     std::cout<< "Nodes -> Edges \n";
     for (size_t i = 0; i < this->size; i++) {
@@ -83,5 +131,5 @@ template <typename T, size_t N> void Graph<T, N>::PrintGraph(){
         }
         std::cout << std::endl;
     }
-}
+};
 #endif // GRAPH_CONTAINER_DEF
