@@ -40,21 +40,22 @@ template <typename T, size_t N> Graph<T, N>::Graph(uint16_t graph_type, size_t s
 
 	switch (graph_type) {
 		case graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED:
-		    this->IncidenceMat.resize(this->size);
+		    this->IncidenceMat.reserve(this->size);
 			break;
 		case graph::detail::GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED:
-			this->IncidenceMat.resize(this->size);
+			this->IncidenceMat.reserve(this->size);
 			break;
 
 		case graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_WEIGHTED:
-		   this->IncidenceMat.resize(this->size);
+		   this->IncidenceMat.reserve(this->size);
 		   break;
 		case graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED:
-		   this->IncidenceMat.resize(this->size);
+		   this->IncidenceMat.reserve(this->size);
 		   break;
 
 		default:
 			std::cout<<"Unknown graph container"<<std::endl;
+			break;
 	}
 }
 
@@ -63,25 +64,48 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(int p, int q) {
 	switch (this->graph_type) {
 		case graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED:
                     this->edgeCount++;
-			this->IncidenceMat[p].push_back(1);
-			this->IncidenceMat[q].push_back(1);
+					this->IncidenceMat[p].push_back(1);
+					this->IncidenceMat[q].push_back(1);
+					for(int i =0;i<IncidenceMat.size();++i){
+						
+						if(i != p && i != q)
+						{
+							this->IncidenceMat[i].push_back(0);
+						}
+			
+					}
 
 			break;
 
 		case graph::detail::GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED: 
             this->edgeCount++;
-			this->IncidenceMat[p].push_back(1);
-            this->IncidenceMat[q].push_back(-1);
+			for(int i =0;i<IncidenceMat.size();++i){
+						if(i==p)
+						{
+							this->IncidenceMat[i].push_back(1);
+						}
+						 if (i == q)
+						{
+							this->IncidenceMat[i].push_back(-1);
+						}
+						else
+						{
+							this->IncidenceMat[i].push_back(0);
+						}
+			
+					}
            
-			break;
+			break; 
+			
+			
 
-      /*  case graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED:
+      /* case graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED:
             this->edgeCount++;
             std::cout<<"Enter weight of the edge"<<std::endl;
-            float weight;
-            std::cin>>weight;
-            this->IncidenceMat[p].push_back(weight);
-            this->IncidenceMat[q].push_back(-weight);    
+            float weightdirected;
+            std::cin>>weightdirected;
+            this->IncidenceMat[p].push_back(weightdirected);
+            this->IncidenceMat[q].push_back(-weightdirected);    
             break;
 
         case graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_WEIGHTED:
@@ -90,13 +114,15 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(int p, int q) {
             std::cout<<"Enter the weight of the edge"<<std::endl;
             std::cin>>weight;
             this->IncidenceMat[p].push_back(weight);
-            this->IncidenceMat[q].push_back(weight);*/
+            this->IncidenceMat[q].push_back(weight);
+			break;
 
 
 		//TODO- For default add edges into adjacency matrix.
-		default :
+		default:
 			this->edgeCount++;
 			break;
+			*/
 	}
 }
 
@@ -153,11 +179,11 @@ void graph_container_to_linear_2d(Graph<T, N> &g) {
 			for (intptr_t i = 0; i < g.IncidenceMat.size(); i++){
 				for (intptr_t j = 0; j < g.IncidenceMat[i].size(); j++) {
 
-					if(g.IncidenceMat[i][j] == 1)
+					if(g.IncidenceMat[i][j] == 1 || g.IncidenceMat[i][j]==-1)
                 {
                     for(intptr_t k = i+1;i<g.IncidenceMat.size();++i)
                     {
-                        if(g.IncidenceMat[k][j] == -1)
+                        if(g.IncidenceMat[k][j] == -1 || g.IncidenceMat[k][j] == 1)
                         {
                             
                             w = k;
