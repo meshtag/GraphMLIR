@@ -75,8 +75,6 @@ template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConv
   // allocating memory and member data types to store 
   // new created adjacency matrix
   intptr_t graphSize[2] = {g.sizes[0] , g.sizes[1]};
-  intptr_t graphStrides[2] = {g.strides[0] , g.strides[1]};
-  float *allocationPointer =  (float *)malloc(sizeof(float));
   // Storing a 2d-matrix in a 1-d format to store as memref
   // do for example a 3x3 matrix becomes a matrix of 9 elements 
   float *graphAlign = (float *)malloc(graphSize[0] * graphSize[1] * sizeof(float));
@@ -102,6 +100,7 @@ template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConv
         }
       }
   }
+  break;
   // case to convert Directed Weighted Adj_List
   case graph::detail::GRAPH_ADJ_LIST_DIRECTED_WEIGHTED:
   {
@@ -120,8 +119,9 @@ template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConv
         }
       }
   }
+  break;
   default:
-    int i = 0;
+    std::cout<<"Unknown graph type \n";
   break;
 }
 

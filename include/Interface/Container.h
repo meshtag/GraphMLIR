@@ -51,27 +51,4 @@ protected:
   size_t size;
 };
 
-
-template <typename T> class AdjList {
-
-protected:
-  // Default constructor.
-  AdjList() {};
-
-  // Data.
-  // The `aligned` and `allocated` members point to the same address, `aligned`
-  // member is responsible for handling data, and `allocated` member is
-  // resposible for handling the memory space.
-  T *allocated;
-  T *aligned;
-  // Offset.
-  intptr_t offset = 0;
-//   // Shape.
-//   intptr_t sizes[N];
-//   // Strides.
-//   intptr_t strides[N];
-  // Number of elements.
-  size_t size;
-};
-
 #endif // INTERFACE_GRAPH_CORE_CONTAINER
