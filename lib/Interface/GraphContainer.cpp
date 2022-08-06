@@ -41,12 +41,12 @@ template <typename T, size_t N> Graph<T, N>::Graph(uint16_t graph_type, T V) : M
     else if(grap_type == 3){
         this->weighted_nodes.resize(this->size);
     }
-    //TODO
-    // Add the implementation for passing data to alignned.
+    //TODO - done
+    // Implementation for passing data to alignned
+    // added in GraphTomemrefConversion function
 };
 
 
-// TODO
 // Functions to populate 2d vector
 template <typename T, size_t N> void Graph<T, N>::AddEdge(T Node1,T Node2) {
     //Add an edge between any two nodes
@@ -70,7 +70,7 @@ template <typename T, size_t N> void Graph<T, N>::AddEdge(T Node1,T Node2, T Edg
 
 // // creating function to convert to MemRef 
 // // that takes in instance of Graph class as input
-template <typename T, size_t N> MemRef_descriptor GraphToMemrefConversion (Graph<T,N> &g)
+template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConversion (Graph<T,N> &g)
 {
   // allocating memory and member data types to store 
   // new created adjacency matrix
@@ -81,7 +81,7 @@ template <typename T, size_t N> MemRef_descriptor GraphToMemrefConversion (Graph
   // do for example a 3x3 matrix becomes a matrix of 9 elements 
   float *graphAlign = (float *)malloc(graphSize[0] * graphSize[1] * sizeof(float));
   g.aligned = graphAlign;
-//   uint16_t graph_type = 
+
   switch(g.grap_type)
   {
     // case to convert Directed Unweighted Adj_List  
@@ -102,6 +102,7 @@ template <typename T, size_t N> MemRef_descriptor GraphToMemrefConversion (Graph
         }
       }
   }
+  // case to convert Directed Weighted Adj_List
   case graph::detail::GRAPH_ADJ_LIST_DIRECTED_WEIGHTED:
   {
       
@@ -129,7 +130,7 @@ MemRef_descriptor sample_graph_memref = MemRef_Descriptor(g.allocated, g.aligned
 return sample_graph_memref;
 }
 
-template <typename T, size_t N> void PrintGraphInMemrefConversion (Graph<T,N> &g){
+template <typename T, size_t N> void Graph<T, N>::PrintGraphInMemrefConversion (Graph<T,N> &g){
       //printing adjacency matrix for debug
       std::cout<<"   ";
       for(unsigned int i=0; i< g.sizes[0]; ++i)

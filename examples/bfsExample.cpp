@@ -43,9 +43,9 @@ int main() {
   // my_graph.AddEdge(2, 0);
   std::cout<<"Graph in Adjacency List format : \n";
   my_graph.PrintGraph();
-  GraphToMemrefConversion(my_graph);
+  my_graph.GraphToMemrefConversion(my_graph);
   std::cout<<"Graph in Adjacency Matrix Format : \n";
-  PrintGraphInMemrefConversion(my_graph);
+  my_graph.PrintGraphInMemrefConversion(my_graph);
   // Convert data to Memref for passing in mlir
   // MemRef_descriptor sample_graph =
   //     MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,

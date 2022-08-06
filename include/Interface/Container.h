@@ -31,8 +31,7 @@
 // - N represents the number of dimensions.
 template <typename T, size_t N> class MemRef {
 
-// protected:
-public:
+protected:
   // Default constructor.
   MemRef() {};
 
@@ -50,8 +49,6 @@ public:
   intptr_t strides[N];
   // Number of elements.
   size_t size;
-
-  // friend MemRef_descriptor GraphToMemrefConversion(Graph<T,N> g);
 };
 
 
