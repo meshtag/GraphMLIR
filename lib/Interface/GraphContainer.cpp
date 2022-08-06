@@ -53,8 +53,7 @@ template <typename T, size_t N> void Graph<T, N>::AddEdge(T Node1,T Node2) {
     switch (this->grap_type) {
         case graph::detail::GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED :
             this->nodes[Node1].push_back(Node2);
-            break;
-        
+            break;   
     }
 };
 // Overloading function for weighted graphs, currently assuming edges are of the same type as nodes
@@ -63,24 +62,23 @@ template <typename T, size_t N> void Graph<T, N>::AddEdge(T Node1,T Node2, T Edg
     switch (this->grap_type) {
         case graph::detail::GRAPH_ADJ_LIST_DIRECTED_WEIGHTED :
             this->weighted_nodes[Node1].push_back( std::make_pair(Node2, EdgeWeight) );
-            break;
-        
+            break; 
     }
 };
 
 // // creating function to convert to MemRef 
 // // that takes in instance of Graph class as input
-template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConversion (Graph<T,N> &g)
+template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConversion ()
 {
   // allocating memory and member data types to store 
   // new created adjacency matrix
-  intptr_t graphSize[2] = {g.sizes[0] , g.sizes[1]};
+  intptr_t graphSize[2] = {this->sizes[0] , this->sizes[1]};
   // Storing a 2d-matrix in a 1-d format to store as memref
   // do for example a 3x3 matrix becomes a matrix of 9 elements 
   float *graphAlign = (float *)malloc(graphSize[0] * graphSize[1] * sizeof(float));
-  g.aligned = graphAlign;
+  this->aligned = graphAlign;
 
-  switch(g.grap_type)
+  switch(this->grap_type)
   {
     // case to convert Directed Unweighted Adj_List  
     case graph::detail::GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED:
@@ -94,7 +92,7 @@ template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConv
       // accessing adjacency list
       for (unsigned int i = 0; i < graphSize[0]; ++i)
       {
-        for (auto x : g.nodes[i])
+        for (auto x : this->nodes[i])
         {
           graphAlign[(i * graphSize[0]) + int(x)] = 1;
         }
@@ -113,7 +111,7 @@ template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConv
       // accessing adjacency list
       for (unsigned int i = 0; i < graphSize[0]; ++i)
       {
-        for (auto x : g.weighted_nodes[i])
+        for (auto x : this->weighted_nodes[i])
         {
           graphAlign[(i * graphSize[0]) + int(x.first)] = x.second;
         }
@@ -125,23 +123,23 @@ template <typename T, size_t N> MemRef_descriptor Graph<T, N>::GraphToMemrefConv
   break;
 }
 
-MemRef_descriptor sample_graph_memref = MemRef_Descriptor(g.allocated, g.aligned, g.offset,
-							g.sizes, g.strides);;
+MemRef_descriptor sample_graph_memref = MemRef_Descriptor(this->allocated, this->aligned, this->offset,
+							this->sizes, this->strides);;
 return sample_graph_memref;
 }
 
-template <typename T, size_t N> void Graph<T, N>::PrintGraphInMemrefConversion (Graph<T,N> &g){
+template <typename T, size_t N> void Graph<T, N>::PrintGraphInMemrefConversion (){
       //printing adjacency matrix for debug
       std::cout<<"   ";
-      for(unsigned int i=0; i< g.sizes[0]; ++i)
+      for(unsigned int i=0; i< this->sizes[0]; ++i)
         std::cout<<i<<" ";
       std::cout<<"\n |-------- \n";
-      for(unsigned int i=0; i< g.sizes[0]; ++i)
+      for(unsigned int i=0; i< this->sizes[0]; ++i)
       {
         std::cout<<i<<"| ";
-        for(unsigned int j = 0; j < g.sizes[1]; ++j)
+        for(unsigned int j = 0; j < this->sizes[1]; ++j)
         {
-          std::cout<<g.aligned[i * g.sizes[0] + j]<<" ";
+          std::cout<<this->aligned[i * this->sizes[0] + j]<<" ";
         }
         std::cout<<"\n";
       }

@@ -48,8 +48,8 @@ public:
   //debugging function
   void PrintGraph();
   // TODO-done: Added conversion to memref functions
-  MemRef_descriptor GraphToMemrefConversion(Graph<T,N> &g);
-  void PrintGraphInMemrefConversion (Graph<T,N> &g);
+  MemRef_descriptor GraphToMemrefConversion();
+  void PrintGraphInMemrefConversion ();
 };
 
 

@@ -36,7 +36,7 @@ int main() {
   my_graph.PrintGraph();
 
   // Convert data to Memref for passing in mlir
-  my_graph.GraphToMemrefConversion(my_graph);
+  my_graph.GraphToMemrefConversion();
   std::cout<<"Graph in Adjacency Matrix Format : \n";
-  my_graph.PrintGraphInMemrefConversion(my_graph);
+  my_graph.PrintGraphInMemrefConversion();
 }
