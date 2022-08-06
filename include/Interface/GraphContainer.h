@@ -29,13 +29,14 @@
 // - N represents the number of dimensions.
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
     // V is the number of vertices/nodes.
+  public:
     uint16_t grap_type;
     T V;
     std::vector< std::vector<T> > nodes;
     std::vector< std::vector<std::pair<T,T> > > weighted_nodes;
 
-    friend MemRef_Descriptor GraphToMemrefConversion(Graph g);
-public:
+    // friend MemRef_Descriptor GraphToMemrefConversion(Graph g);
+// public:
   // Constructor for any graph type with V nodes .
   Graph(uint16_t graph_type, T V);
   // TODO:
@@ -48,9 +49,13 @@ public:
   void PrintGraph();
 
   
+
+  
   // TODO: Add more implementation functions
 };
 
+template<typename T, size_t N> MemRef_descriptor GraphToMemrefConversion(Graph<T,N> &g);
+template<typename T, size_t N> void PrintGraphInMemrefConversion (Graph<T,N> &g);
 // // Graph container.
 // // For Adjacency List
 // // - T represents the type of the elements.

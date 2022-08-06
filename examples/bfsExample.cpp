@@ -25,18 +25,27 @@ int main() {
   // std::cout<<"enter the number of elements in graph"<<std::endl;
   // std::cin>>no_of_elements;
 
-  Graph<float, 2> my_graph(3, no_of_elements);
-  std::cout<<"Now here : \n";
+  
+  std::cout<<"Example for weighted graph : \n";
   //TODO for Adjacency List Directed 
-  // Call functions to create graph
+  // Call functions to create weighted graph
+  Graph<float, 2> my_graph(3, no_of_elements);
   my_graph.AddEdge(0, 1, 2);
   my_graph.AddEdge(0, 2, 3);
   my_graph.AddEdge(1, 2, 4);
   my_graph.AddEdge(2, 0, 6);
-  std::cout<<"Now here : \n";
+  // std::cout<<"Example for unweighted graph : \n";
+  // // Call functions to create unweighted graph
+  // Graph<float, 2> my_graph(2, no_of_elements);
+  // my_graph.AddEdge(0, 1);
+  // my_graph.AddEdge(0, 2);
+  // my_graph.AddEdge(1, 2);
+  // my_graph.AddEdge(2, 0);
+  std::cout<<"Graph in Adjacency List format : \n";
   my_graph.PrintGraph();
-
   GraphToMemrefConversion(my_graph);
+  std::cout<<"Graph in Adjacency Matrix Format : \n";
+  PrintGraphInMemrefConversion(my_graph);
   // Convert data to Memref for passing in mlir
   // MemRef_descriptor sample_graph =
   //     MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
