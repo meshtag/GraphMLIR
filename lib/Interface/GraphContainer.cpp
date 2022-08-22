@@ -92,6 +92,35 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1,T Node2, T Edg
     }
 }
 
+template <typename T, size_t N> void Graph<T, N>::printGraphOg() 
+{
+	std::cout<< "Nodes -> Edges \n";
+    for (size_t i = 0; i < this->size; i++) {
+        std::cout << i << "     -> ";
+        switch (this-> graph_type) {
+            case graph::detail::GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED :
+                for (T x : this->adjList[i]) {
+                    std::cout << x << " ";
+                }
+                break;
+			case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED :
+                for (T x : this->adjList[i]) {
+                    std::cout << x << " ";
+                }
+                break;
+            case graph::detail::GRAPH_ADJ_LIST_DIRECTED_WEIGHTED :
+                // for (std:vector : x : this->weighted_nodes.at(i)) {
+					std::cout<< this->adjList_weighted[i].size();
+                for(size_t j = 0; j<this->adjList_weighted[i].size(); j++){
+                    std::cout << this->adjList_weighted[i].at(j).first;
+                    std::cout << " Weight(" << this->adjList_weighted[i].at(j).second <<") | ";
+                }
+                break;
+        }
+        std::cout << std::endl;
+    }
+};
+
 template <typename T, size_t N> void Graph<T, N>::printGraph() 
 {
 	intptr_t size = this->size;

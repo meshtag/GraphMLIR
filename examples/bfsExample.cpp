@@ -22,6 +22,8 @@ int main() {
 	sample_graph.addEdge(1,2);
 	sample_graph.addEdge(2,3);
 	sample_graph.addEdge(3,2);
+
+	sample_graph.printGraphOg();
 	
 	auto memref = sample_graph.graph_to_MemRef_descriptor();
 	
