@@ -46,11 +46,14 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 		//Function to add edges in graph.
 		void addEdge(T a, T b);
 		void addEdge(T Node1,T Node2, T EdgeWeight); 
-		
+
+		//Function to print the linear 2d graph.
+		void printGraphOg();
+
 		//converter from graph to MemRef_descriptor
 		MemRef_descriptor graph_to_MemRef_descriptor();
 
-		//Function to print the linear 2d graph.
+		//Function to print the linear 2d graph after conversion.
 		void printGraph();
 };
 
