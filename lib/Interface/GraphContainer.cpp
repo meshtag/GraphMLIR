@@ -110,11 +110,16 @@ template <typename T, size_t N> void Graph<T, N>::printGraphOg()
                 break;
             case graph::detail::GRAPH_ADJ_LIST_DIRECTED_WEIGHTED :
                 // for (std:vector : x : this->weighted_nodes.at(i)) {
-					std::cout<< this->adjList_weighted[i].size();
                 for(size_t j = 0; j<this->adjList_weighted[i].size(); j++){
                     std::cout << this->adjList_weighted[i].at(j).first;
                     std::cout << " Weight(" << this->adjList_weighted[i].at(j).second <<") | ";
                 }
+                break;
+			case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED :
+                for(size_t j = 0; j<this->adjList_weighted[i].size(); j++){
+                    std::cout << this->adjList_weighted[i].at(j).first;
+                    std::cout << " Weight(" << this->adjList_weighted[i].at(j).second <<") | ";
+				}
                 break;
         }
         std::cout << std::endl;
