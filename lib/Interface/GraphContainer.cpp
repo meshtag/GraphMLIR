@@ -81,7 +81,7 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1, T Node2)
 template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1,T Node2, T EdgeWeight)
 {
     //Add an edge between any two nodes
-    switch (this->grap_type) {
+    switch (this->graph_type) {
         case graph::detail::GRAPH_ADJ_LIST_DIRECTED_WEIGHTED:
             this->adjList_weighted[Node1].push_back( std::make_pair(Node2, EdgeWeight));
             break; 
@@ -182,7 +182,7 @@ MemRef_descriptor Graph<T, N>::graph_to_MemRef_descriptor()
       		for (unsigned int i = 0; i < x; ++i) {
         		for (auto X : this->adjList_weighted[i]) {
           			linear[i * x + int(X.first)] = X.second;
-					linear[i * int(X.first) + x] = X.second;
+					linear[i + x * int(X.first)] = X.second;
 				} 
 			} 
   			break;
