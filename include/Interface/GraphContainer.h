@@ -37,10 +37,13 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 		//adjacency list representation of graph.
 		std::vector<std::vector<T>> adjList;
 
-		//incidence matrix representation of graph.
-		std::vector<std::vector<T>> incMat;
-		
-		//weighted adjacency list representation of graph.
+                // incidence matrix representation of graph.
+                std::vector<std::vector<T>> incMat;
+
+                // adjacency matrix representation of graph
+                std::vector<std::vector<T>> adjMat;
+
+                //weighted adjacency list representation of graph.
 		std::vector<std::vector<std::pair<T,T>>> adjList_weighted;
 	public:
 		//Constructor
