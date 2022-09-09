@@ -25,7 +25,12 @@
 #include "Interface/memref.h"
 #include <cstddef>
 #include <iostream>
-
+/**
+ * The Graph Class ; the object of this class will be used to call functions.
+ * 
+ * @tparam T represents the datatype to be used.
+ * @tparam N represents the number of dimensions.
+ */
 template <typename T, size_t N> class Graph : public MemRef<T, N> {
 	protected:
 		//the graph type and representation
