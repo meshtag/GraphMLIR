@@ -27,6 +27,14 @@
 #include <cmath>
 #include <cstdint>
 
+/**
+ * @brief Construct a new Graph< T,  N>:: Graph object
+ * 
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ * @param graph_type represents the type of graph 
+ * @param size reopresents the number of nodes in the graph
+ */
 template <typename T, size_t N> Graph<T, N>::Graph(uint16_t graph_type, size_t size)
 {
 	
@@ -111,6 +119,14 @@ template <typename T, size_t N> Graph<T, N>::Graph(uint16_t graph_type, size_t s
 			std::cout<<"Unknown graph container"<<std::endl;
 	}
 }
+/**
+ * @brief This function provides the functionality to add edges to the graph 
+ * 
+ * @tparam T represnts the datatype used.
+ * @tparam N represnts the number of dimensions.
+ * @param Node1 The first node for inserting an edge
+ * @param Node2 The second node for inserting an edge.
+ */
 
 template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1, T Node2)
 {
@@ -171,7 +187,15 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1, T Node2)
 	}
 }
 
-// Overloading function for weighted graphs, currently assuming edges are of the same type as nodes
+/**
+ * @brief Overloading function for weighted graphs, currently assuming edges are of the same type as nodes
+ * 
+ * @tparam T Represnts the datatype used
+ * @tparam N Represents the nnumber of  dimensions
+ * @param Node1 First Node for creating an edge
+ * @param Node2 Second node for creating an edge
+ * @param EdgeWeight The edgeweight for the edge.
+ */
 template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1,T Node2, T EdgeWeight)
 {
     //Add an edge between any two nodes
@@ -205,7 +229,12 @@ template <typename T, size_t N> void Graph<T, N>::addEdge(T Node1,T Node2, T Edg
           break;
     }
 }
-
+/**
+ * @brief Prints the Graph in its original form before its conversion to a linear memref descriptor
+ * 
+ * @tparam T represents the datatype used
+ * @tparam N represnts the number of dimensions.
+ */
 template <typename T, size_t N> void Graph<T, N>::printGraphOg() 
 {
 	std::cout<< "Nodes -> Edges \n";
@@ -285,7 +314,12 @@ template <typename T, size_t N> void Graph<T, N>::printGraphOg()
         std::cout << std::endl;
     }
 };
-
+/**
+ * @brief Function to print the graph using the memref descriptor
+ * 
+ * @tparam T Repesents the datatype used  
+ * @tparam N represents the number of dimensions.
+ */
 template <typename T, size_t N> void Graph<T, N>::printGraph() {
   for (int v = 0; v < this->sizes[0]; ++v) {
     for (int w = 0; w < this->sizes[1]; ++w) {
@@ -294,6 +328,13 @@ template <typename T, size_t N> void Graph<T, N>::printGraph() {
     std::cout << std::endl;
   }
 }
+/**
+ * @brief Converts the various Graph representations types to a linear memref descriptor
+ * 
+ * @tparam T represents the datatype used
+ * @tparam N represents the number of dimensions.
+ * @return MemRef_descriptor returns a memref descriptor of the respective graph representation type after conversion.
+ */
 
 template <typename T, size_t N> 
 MemRef_descriptor Graph<T, N>::graph_to_MemRef_descriptor()
