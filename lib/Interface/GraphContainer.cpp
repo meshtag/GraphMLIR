@@ -246,7 +246,7 @@ template <typename T, size_t N> void Graph<T, N>::printGraphOg()
                     std::cout << x << " ";
                 }
                 break;
-			case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED :
+			      case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED :
                 for (T x : this->adjList[i]) {
                     std::cout << x << " ";
                 }
@@ -258,58 +258,52 @@ template <typename T, size_t N> void Graph<T, N>::printGraphOg()
                     std::cout << " Weight(" << this->adjList_weighted[i].at(j).second <<") | ";
                 }
                 break;
-			case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED :
+			      case graph::detail::GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED :
                 for(size_t j = 0; j<this->adjList_weighted[i].size(); j++){
                     std::cout << this->adjList_weighted[i].at(j).first;
                     std::cout << " Weight(" << this->adjList_weighted[i].at(j).second <<") | ";
-				}
+		    		}
                 break;
-                        case graph::detail::
-                            GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED:
-                          for (T x : this->incMat[i]) {
-                            std::cout << x << "  ";
-                          }
-                          break;
-                        case graph::detail::
-                            GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED:
-                          for (T x : this->incMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
-                        case graph::detail::
-                            GRAPH_INC_MATRIX_UNDIRECTED_WEIGHTED:
-                          for (T x : this->incMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
-                        case graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED:
-                          for (T x : this->incMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
-                        case graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED:
-                          for (T x : this->adjMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
-                        case graph::detail::
-                            GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED:
-                          for (T x : this->adjMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
-                        case graph::detail::
-                            GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED:
-                          for (T x : this->adjMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
-                        case graph::detail::
-                            GRAPH_ADJ_MATRIX_UNDIRECTED_UNWEIGHTED:
-                          for (T x : this->adjMat[i]) {
-                            std::cout << x << " ";
-                          }
-                          break;
+            case graph::detail::GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED:
+                for (T x : this->incMat[i]) {
+                  std::cout << x << "  ";
+                }
+                break;
+            case graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED:
+                for (T x : this->incMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
+            case graph::detail::GRAPH_INC_MATRIX_UNDIRECTED_WEIGHTED:
+                for (T x : this->incMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
+            case graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED:
+                for (T x : this->incMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
+            case graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED:
+                for (T x : this->adjMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
+            case graph::detail::GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED:
+                for (T x : this->adjMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
+            case graph::detail:: GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED:
+                for (T x : this->adjMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
+            case graph::detail::GRAPH_ADJ_MATRIX_UNDIRECTED_UNWEIGHTED:
+                for (T x : this->adjMat[i]) {
+                  std::cout << x << " ";
+                }
+                break;
         }
         std::cout << std::endl;
     }
@@ -337,7 +331,7 @@ template <typename T, size_t N> void Graph<T, N>::printGraph() {
  */
 
 template <typename T, size_t N> 
-MemRef_descriptor Graph<T, N>::graph_to_MemRef_descriptor()
+void Graph<T, N>::graph_to_MemRef_descriptor()
 {
 	intptr_t x = this->sizes[0];
 	intptr_t y = this->sizes[1];
@@ -527,10 +521,7 @@ MemRef_descriptor Graph<T, N>::graph_to_MemRef_descriptor()
 
 	this->aligned = linear;
 
-	MemRef_descriptor sample_graph_memref = MemRef_Descriptor(this->allocated, this->aligned, this->offset,
-							this->sizes, this->strides);
-
-	return sample_graph_memref;
+	return;
 }
 
 #endif // INTERFACE_GRAPH_CONTAINER_DEF

@@ -42,13 +42,13 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 		//adjacency list representation of graph.
 		std::vector<std::vector<T>> adjList;
 
-                // incidence matrix representation of graph.
-                std::vector<std::vector<T>> incMat;
+		// incidence matrix representation of graph.
+		std::vector<std::vector<T>> incMat;
 
-                // adjacency matrix representation of graph
-                std::vector<std::vector<T>> adjMat;
+		// adjacency matrix representation of graph
+		std::vector<std::vector<T>> adjMat;
 
-                //weighted adjacency list representation of graph.
+		//weighted adjacency list representation of graph.
 		std::vector<std::vector<std::pair<T,T>>> adjList_weighted;
 	public:
 		//Constructor
@@ -62,7 +62,7 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 		void printGraphOg();
 
 		//converter from graph to MemRef_descriptor
-		MemRef_descriptor graph_to_MemRef_descriptor();
+		void graph_to_MemRef_descriptor();
 
 		//Function to print the linear 2d graph after conversion.
 		void printGraph();

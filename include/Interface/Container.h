@@ -26,7 +26,6 @@
 #include <memory>
 #include <stdint.h>
 #include <vector>
-#include <list>
 
 // MemRef descriptor.
 // - T represents the type of the elements.
