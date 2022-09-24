@@ -26,13 +26,13 @@ int main() {
 	// sample_graph.addEdge(1,2);
 	
 	//use for weighted graphs
-	  Graph<float, 2> sample_graph(
-      graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED, 5);
-  sample_graph.addEdge(0, 2, 1);
-  sample_graph.addEdge(2, 3, 3);
-  sample_graph.addEdge(3, 2, 3);
-  sample_graph.addEdge(2, 2, 6);
-  sample_graph.addEdge(1, 2, 2);
+	Graph<float, 2> sample_graph(
+		graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED, 5);
+	sample_graph.addEdge(0, 2, 1);
+	sample_graph.addEdge(2, 3, 3);
+	sample_graph.addEdge(3, 2, 3);
+	sample_graph.addEdge(2, 2, 6);
+	sample_graph.addEdge(1, 2, 2);
 
 	//this will print the original graph.
 	std::cout<<"Printing graph in format it was entered ( GRAPH_ADJ_MARIX_DIRECTED_WEIGHTED )\n";
@@ -47,5 +47,7 @@ int main() {
 
 	std::cout<<"Printing graph in form of 2d matrix after conversion to memref\n";
 	sample_graph.printGraph();
+	
+	graph::graph_bfs(&memref, &memref, &memref);
 
 }

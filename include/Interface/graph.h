@@ -23,6 +23,7 @@
 #define INCLUDE_INTERFACE_GRAPH_H
 
 #include <Interface/memref.h>
+#include <Interface/Container.h>
 
 namespace graph {
 namespace detail {
@@ -41,18 +42,18 @@ enum graph_type {
   GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED,
   GRAPH_INC_MATRIX_DIRECTED_WEIGHTED,
 };
-
 // Functions present inside graph::detail are not meant to be called by users
 // directly.
 // Declare the BFS C interface.
-extern "C" {
-void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-                      MemRef_descriptor graph3);
+
+extern "C" { ///unable to use with templates
+void _mlir_ciface_bfs(MemRef<float,2> *graph1, MemRef<float,2> *graph2,
+                      MemRef<float,2> *graph3);
 }
 } // namespace detail
 
-void graph_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-               MemRef_descriptor graph3) {
+template <typename T, size_t N> void graph_bfs(MemRef<T,N> *graph1, MemRef<T,N> *graph2,
+               MemRef<T,N> *graph3) {
   detail::_mlir_ciface_bfs(graph1, graph2, graph3);
 }
 } // namespace graph
