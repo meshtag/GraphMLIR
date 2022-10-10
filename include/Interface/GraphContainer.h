@@ -22,7 +22,6 @@
 #define INTERFACE_GRAPHCONTAINER_H
 
 #include "Interface/Container.h"
-#include "Interface/memref.h"
 #include <cstddef>
 #include <iostream>
 /**
@@ -31,11 +30,13 @@
  * @tparam T represents the datatype to be used.
  * @tparam N represents the number of dimensions.
  */
-template <typename T, size_t N> class Graph : public MemRef<T, N> {
+template <typename T, size_t N> class Graph {
 	protected:
 		//the graph type and representation
 		uint16_t graph_type;
-
+		size_t size;
+		intptr_t sizes[N];
+		MemRef<T, N> *data = nullptr;
 		//the count of number of edges added in the graph.
 		int edgeCount = 0;
 	
@@ -63,6 +64,10 @@ template <typename T, size_t N> class Graph : public MemRef<T, N> {
 
 		//converter from graph to MemRef_descriptor
 		void graph_to_MemRef_descriptor();
+		MemRef<T, N> &get_Memref(){
+			graph_to_MemRef_descriptor();
+			return *data;
+		}
 
 		//Function to print the linear 2d graph after conversion.
 		void printGraph();

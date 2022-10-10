@@ -8,7 +8,6 @@
 //===----------------------------------------------------------------------===//
 
 #include <Interface/graph.h>
-#include <Interface/memref.h>
 #include <Interface/Container.h>
 #include <Interface/GraphContainer.h>
 #include <vector>
@@ -38,14 +37,14 @@ int main() {
 	std::cout<<"Printing graph in format it was entered ( GRAPH_ADJ_MARIX_DIRECTED_WEIGHTED )\n";
 	sample_graph.printGraphOg();
 	
-	sample_graph.graph_to_MemRef_descriptor();
-
-	MemRef<float,2> memref;
-	memref = sample_graph;
+	auto x = sample_graph.get_Memref();
 	
 	//this will print the linear 2d matrix in 2d form.
 
 	std::cout<<"Printing graph in form of 2d matrix after conversion to memref\n";
 	sample_graph.printGraph();
+  graph::graph_bfs(x, x, x);
+  x.release();
+  std::cout<<"End of the program! \n";
 
 }

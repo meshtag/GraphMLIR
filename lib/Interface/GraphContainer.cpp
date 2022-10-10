@@ -40,15 +40,11 @@ template <typename T, size_t N> Graph<T, N>::Graph(uint16_t graph_type, size_t s
 	
 	// Assign the grah type.
 	this->graph_type = graph_type;
+  this->size = size;
+  this->sizes[0] = size;
+  this->sizes[1] = size;
 
-	// Assign the memebers of MefRef.
-	this->size = size;
-	this->allocated = (T *)malloc(sizeof(T));
-	this->sizes[0] = size;
-	this->sizes[1] = size;
-	this->strides[0] = size;
-	this->strides[1] = size;
-        size_t maxEdges = ((this->size) * (this->size - 1)) / 2;
+  size_t maxEdges = ((this->size) * (this->size - 1)) / 2;
 
         //resize the adjacency list according to the number of nodes.
 	switch (graph_type) {
@@ -308,18 +304,23 @@ template <typename T, size_t N> void Graph<T, N>::printGraphOg()
         std::cout << std::endl;
     }
 };
-/**
- * @brief Function to print the graph using the memref descriptor
- * 
- * @tparam T Repesents the datatype used  
- * @tparam N represents the number of dimensions.
- */
+// /**
+//  * @brief Function to print the graph using the memref descriptor
+//  * 
+//  * @tparam T Repesents the datatype used  
+//  * @tparam N represents the number of dimensions.
+//  */
 template <typename T, size_t N> void Graph<T, N>::printGraph() {
+  if (!this->data) {
+    std:: cout<<"Graph is not converted into memref! \n";
+    return;
+  }
+  auto y = this->data->getData();
   for (int v = 0; v < this->sizes[0]; ++v) {
     for (int w = 0; w < this->sizes[1]; ++w) {
-      std::cout << this->aligned[this->sizes[0] * v + w] << " ";
+      std::cout << y[this->sizes[0] * v + w] << " ";
     }
-    std::cout << std::endl;
+    std::cout << "\n";
   }
 }
 /**
@@ -333,7 +334,8 @@ template <typename T, size_t N> void Graph<T, N>::printGraph() {
 template <typename T, size_t N> 
 void Graph<T, N>::graph_to_MemRef_descriptor()
 {
-	intptr_t x = this->sizes[0];
+  // Assign the memebers of MefRef.
+  intptr_t x = this->sizes[0];
 	intptr_t y = this->sizes[1];
 	T* linear = (T *)malloc(sizeof(T) * x * y);
         size_t maxEdges = ((this->size) * (this->size - 1)) / 2;
@@ -518,10 +520,13 @@ void Graph<T, N>::graph_to_MemRef_descriptor()
 			std::cout<<"Unknown graph type"<<std::endl;
 			break;
 	}
+  
+	if(data) delete data;
+  std::cout<<"Inside the graph to memref descriptor! \n";
+  data = new MemRef<T, N> (linear, this->sizes);
 
-	this->aligned = linear;
 
-	return;
+	// return *data;
 }
 
 #endif // INTERFACE_GRAPH_CONTAINER_DEF
