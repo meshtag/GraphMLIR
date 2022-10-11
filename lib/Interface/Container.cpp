@@ -29,9 +29,11 @@
 
 #include "Interface/Container.h"
 
-// MemRef Shape Constructor.
-// Construct a MemRef object from the data shape and initial value.
-// The default initial value is 0.
+/**
+ * @brief MemRef Shape Constructor. Construct a MemRef object from the data shape and initial value. The default initial value is 0.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 MemRef<T, N>::MemRef(intptr_t sizes[N], T init) {
   for (size_t i = 0; i < N; i++) {
@@ -44,9 +46,12 @@ MemRef<T, N>::MemRef(intptr_t sizes[N], T init) {
   std::fill(aligned, aligned + size, init);
 }
 
-// MemRef Array Constructor.
-// Construct a MemRef object from the data pointer, sizes, and offset.
-// The default offset is 0.
+
+/**
+ * @brief MemRef Array Constructor. Construct a MemRef object from the data pointer, sizes, and offset. The default offset is 0.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 MemRef<T, N>::MemRef(const T *data, intptr_t sizes[N], intptr_t offset) {
   this->offset = offset;
@@ -62,14 +67,16 @@ MemRef<T, N>::MemRef(const T *data, intptr_t sizes[N], intptr_t offset) {
   }
 }
 
-// Copy Constructor.
-// This constructor is used to initialize a MemRef object with another MemRef
-// object.
-// - Copy `offset` and `size` directly.
-// - Elementwise copy `sizes` array.
-// - Calculate `strides`.
-// - Allocate new space.
-// - Deep copy the data from the original object.
+/**
+ * @brief Copy Constructor. This constructor is used to initialize a MemRef object with another MemRef object.
+ 	- Copy `offset` and `size` directly.
+ *  - Elementwise copy `sizes` array.
+ *  - Calculate `strides`.
+ *  - Allocate new space.
+ *  - Deep copy the data from the original object.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 MemRef<T, N>::MemRef(const MemRef<T, N> &other)
     : offset(other.offset), size(other.size) {
@@ -84,13 +91,17 @@ MemRef<T, N>::MemRef(const MemRef<T, N> &other)
   }
 }
 
-// Copy Assignment Operator.
-// - Check if they are the same object.
-// - Copy `offset` and `size` directly.
-// - Elementwise copy `sizes`.
-// - Calculate the `strides`.
-// - Free the data space of this object to avoid memory leaks.
-// - Allocate new space and deep copy.
+/**
+ * @brief Copy Assignment Operator..
+ * - Check if they are the same object.
+ * - Copy `offset` and `size` directly.
+ * - Elementwise copy `sizes`.
+ * - Calculate the `strides`.
+ * - Free the data space of this object to avoid memory leaks.
+ * - Allocate new space and deep copy.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(const MemRef<T, N> &other) {
   if (this != &other) {
@@ -113,13 +124,16 @@ MemRef<T, N> &MemRef<T, N>::operator=(const MemRef<T, N> &other) {
   return *this;
 }
 
-// Move Constructor.
-// This constructor is used to initialize a MemRef object from a rvalue.
-// The move constructor steals the resources of the original object.
-// Note that the original object no longer owns the members and spaces.
-// - Steal members from the original object.
-// - Assign the NULL pointer to the original aligned and allocated members to
-//   avoid the double free error.
+/**
+ * @brief Move Constructor. This constructor is used to initialize a MemRef object from a rvalue.
+ * The move constructor steals the resources of the original object.
+ * Note that the original object no longer owns the members and spaces.
+ * - Steal members from the original object.
+ * - Assign the NULL pointer to the original aligned and allocated members to
+ *   avoid the double free error.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 MemRef<T, N>::MemRef(MemRef<T, N> &&other) noexcept
     : allocated(other.allocated), aligned(other.aligned), offset(other.offset),
@@ -131,13 +145,16 @@ MemRef<T, N>::MemRef(MemRef<T, N> &&other) noexcept
   other.allocated = other.aligned = nullptr;
 }
 
-// Move Assignment Operator.
-// Note that the original object no longer owns the members and spaces.
-// - Check if they are the same object.
-// - Free the data space of this object to avoid memory leaks.
-// - Steal members from the original object.
-// - Assign the NULL pointer to the original aligned and allocated members to
-//   avoid the double free error.
+/**
+ * @brief Move Assignment Operator. Note that the original object no longer owns the members and spaces.
+ * - Check if they are the same object.
+ * - Free the data space of this object to avoid memory leaks.
+ * - Steal members from the original object.
+ * - Assign the NULL pointer to the original aligned and allocated members to
+ *   avoid the double free error.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(MemRef<T, N> &&other) noexcept {
   if (this != &other) {
@@ -157,40 +174,66 @@ MemRef<T, N> &MemRef<T, N>::operator=(MemRef<T, N> &&other) noexcept {
   return *this;
 }
 
-// MemRef Destructor.
-// Note that the `allocated` and `aligned` point to the same address, so it is
-// enough to release the space of the `allocated` pointer in the destructor.
+/**
+ * @brief MemRef Destructor. Note that the original object no longer owns the members and spaces.
+ * Note that the `allocated` and `aligned` point to the same address, so it is
+ * enough to release the space of the `allocated` pointer in the destructor.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N> MemRef<T, N>::~MemRef() {
   if (allocated)
     delete allocated;
 }
 
-// Get the data pointer.
-// Return the `aligned` pointer if the container data size is greater than zero.
-// If the data size is negative or zero, which means no space is allocated for
-// the container data pointer, the function does not allow to return the data
-// pointer.
-template <typename T, std::size_t N> T *MemRef<T, N>::getData() {
+/**
+ * @brief Get the data pointer.
+ * Return the `aligned` pointer if the container data size is greater than zero.
+ * If the data size is negative or zero, which means no space is allocated for
+ * the container data pointer, the function does not allow to return the data
+ * pointer.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
+template <typename t, std::size_t n> t *memref<t, n>::getdata() {
   assert((size > 0) && "Invalid container data size.");
   return aligned;
 }
 
-// Get the element at index.
-// Return the specific element if the container data size is greater than zero.
-// If the data size is negative or zero, which means no space is allocated for
-// the container data pointer, this operator does not allow to return the data
-// element.
+/**
+ * @brief Get the element at index.
+ * Return a const refrence of specific element if the container data size is greater than zero.
+ * If the data size is negative or zero, which means no space is allocated for
+ * the container data pointer, this operator does not allow to return the data
+ * element.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 const T &MemRef<T, N>::operator[](size_t index) const {
   assert((size > 0) && "Invalid container data size.");
   return aligned[index + offset];
 }
+
+/**
+ * @brief Get the element at index.
+ * Return a non-const refrence of specific element if the container data size is greater than zero.
+ * If the data size is negative or zero, which means no space is allocated for
+ * the container data pointer, this operator does not allow to return the data
+ * element.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N> T &MemRef<T, N>::operator[](size_t index) {
   assert((size > 0) && "Invalid container data size.");
   return aligned[index + offset];
 }
 
-// Calculate the stride values for each dimension based on the sizes.
+/**
+ * @brief Calculate the stride values for each dimension based on the sizes.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N> void MemRef<T, N>::setStrides() {
   assert((N > 0) && "Invalid container number of dims");
   strides[N - 1] = 1;
@@ -201,7 +244,11 @@ template <typename T, std::size_t N> void MemRef<T, N>::setStrides() {
   }
 }
 
-// Calculate the total number of elements in the MemRef container.
+/**
+ * @brief Calculate the total number of elements in the MemRef container.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, std::size_t N>
 size_t MemRef<T, N>::product(intptr_t sizes[N]) const {
   size_t size = 1;
@@ -209,6 +256,7 @@ size_t MemRef<T, N>::product(intptr_t sizes[N]) const {
     size *= sizes[i];
   return size;
 }
+
 template <typename T, size_t N>
 MemRef<T, N>::MemRef(std::unique_ptr<T> &uptr, intptr_t *sizes,
                      intptr_t offset) {
@@ -224,6 +272,12 @@ MemRef<T, N>::MemRef(std::unique_ptr<T> &uptr, intptr_t *sizes,
   setStrides();
   size = product(sizes);
 }
+
+/**
+ * @brief Release the aligned and allocated field. 
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
 template <typename T, size_t N> T *MemRef<T, N>::release() {
   T *temp = aligned;
   aligned = nullptr;
