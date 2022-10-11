@@ -195,11 +195,10 @@ template <typename T, std::size_t N> MemRef<T, N>::~MemRef() {
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
-template <typename t, std::size_t n> t *memref<t, n>::getdata() {
+template <typename T, std::size_t N> T *MemRef<T, N>::getData() {
   assert((size > 0) && "Invalid container data size.");
   return aligned;
 }
-
 /**
  * @brief Get the element at index.
  * Return a const refrence of specific element if the container data size is greater than zero.

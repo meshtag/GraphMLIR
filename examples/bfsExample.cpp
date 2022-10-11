@@ -18,7 +18,7 @@ int main() {
   // Graph<float, 2>
   // sample_graph(graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED, 5);
 
-  // //use for unweighted graphs
+  // use for unweighted graphs
   // sample_graph.addEdge(0,2);
   // sample_graph.addEdge(2,3);
   // sample_graph.addEdge(3,2);
