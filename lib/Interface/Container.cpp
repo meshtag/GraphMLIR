@@ -67,6 +67,28 @@ MemRef<T, N>::MemRef(const T *data, intptr_t sizes[N], intptr_t offset) {
 }
 
 /**
+ * @brief MemRef Array Constructor. Construct a MemRef object from a unique_ptr,
+ * sizes, and offset. The default offset is 0.
+ * @tparam T represents the datatype to be used
+ * @tparam N represents the number of dimensions
+ */
+template <typename T, size_t N>
+MemRef<T, N>::MemRef(std::unique_ptr<T> &uptr, intptr_t *sizes,
+                     intptr_t offset) {
+  if (!uptr)
+    assert(0 && "Taking over an empty unique pointer.");
+  T *data = uptr.release();
+  this->aligned = data;
+  this->allocated = data;
+  this->offset = offset;
+  for (size_t i = 0; i < N; i++) {
+    this->sizes[i] = sizes[i];
+  }
+  setStrides();
+  size = product(sizes);
+}
+
+/**
  * @brief Copy Constructor. This constructor is used to initialize a MemRef
  object with another MemRef object.
         - Copy `offset` and `size` directly.
@@ -112,9 +134,7 @@ MemRef<T, N> &MemRef<T, N>::operator=(const MemRef<T, N> &other) {
   delete[] allocated;
   // Allocate new space and deep copy.
   T *ptr = new T[size];
-  for (size_t i = 0; i < size; i++) {
-    ptr[i] = other.aligned[i];
-  }
+  std::copy(other.aligned, other.aligned + size, ptr);
   aligned = ptr;
   allocated = ptr;
   return *this;
@@ -157,16 +177,7 @@ template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(MemRef<T, N> &&other) noexcept {
   // Free the original aligned and allocated space.
   delete[] allocated;
-  // // Steal members of the original object.
-  // std::swap(strides, other.strides);
-  // std::swap(offset, other.offset);
-  // std::swap(sizes, other.sizes);
-  // std::swap(size, other.size);
-  // std::swap(allocated, other.allocated);
-  // std::swap(aligned, other.aligned);
-  // // Assign the NULL pointer to the original aligned and allocated members to
-  // // avoid the double free error.
-  // other.allocated = other.aligned = nullptr;
+  // Copy members of the original object.
   MemRef<T, N>::MemRef(other);
   return *this;
 }
@@ -252,22 +263,6 @@ size_t MemRef<T, N>::product(intptr_t sizes[N]) const {
   for (size_t i = 0; i < N; i++)
     size *= sizes[i];
   return size;
-}
-
-template <typename T, size_t N>
-MemRef<T, N>::MemRef(std::unique_ptr<T> &uptr, intptr_t *sizes,
-                     intptr_t offset) {
-  if (!uptr)
-    assert(0 && "Taking over an empty unique pointer.");
-  T *data = uptr.release();
-  this->aligned = data;
-  this->allocated = data;
-  this->offset = offset;
-  for (size_t i = 0; i < N; i++) {
-    this->sizes[i] = sizes[i];
-  }
-  setStrides();
-  size = product(sizes);
 }
 
 /**
