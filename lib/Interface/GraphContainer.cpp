@@ -38,7 +38,7 @@
 template <typename T, size_t N>
 Graph<T, N>::Graph(uint16_t graph_type, size_t size) {
 
-  // Assign the grah type.
+  // Assign the graph type.
   this->graph_type = graph_type;
   this->size = size;
   this->sizes[0] = size;
@@ -517,8 +517,6 @@ template <typename T, size_t N> void Graph<T, N>::graph_to_MemRef_descriptor() {
     delete data;
   std::cout << "Inside the graph to memref descriptor! \n";
   data = new MemRef<T, N>(linear, this->sizes);
-
-  // return *data;
 }
 
 #endif // INTERFACE_GRAPH_CONTAINER_DEF
