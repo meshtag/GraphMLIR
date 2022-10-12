@@ -33,7 +33,7 @@
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  * @param graph_type represents the type of graph
- * @param size reopresents the number of nodes in the graph
+ * @param size represents the number of nodes in the graph
  */
 template <typename T, size_t N>
 Graph<T, N>::Graph(uint16_t graph_type, size_t size) {

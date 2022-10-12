@@ -65,7 +65,6 @@ public:
 
 protected:
   // Default constructor.
-  // This constructor is designed for derived domain-specific constructor.
   MemRef(){};
   // Set the strides.
   // Computes the strides of the transposed tensor for transpose=true.

@@ -30,7 +30,8 @@
 #include "Interface/Container.h"
 
 /**
- * @brief MemRef Shape Constructor. Construct a MemRef object from the data shape and initial value. The default initial value is 0.
+ * @brief MemRef Shape Constructor. Construct a MemRef object from the data
+ * shape and initial value. The default initial value is 0.
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
@@ -46,9 +47,9 @@ MemRef<T, N>::MemRef(intptr_t sizes[N], T init) {
   std::fill(aligned, aligned + size, init);
 }
 
-
 /**
- * @brief MemRef Array Constructor. Construct a MemRef object from the data pointer, sizes, and offset. The default offset is 0.
+ * @brief MemRef Array Constructor. Construct a MemRef object from the data
+ * pointer, sizes, and offset. The default offset is 0.
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
@@ -62,14 +63,13 @@ MemRef<T, N>::MemRef(const T *data, intptr_t sizes[N], intptr_t offset) {
   size = product(sizes);
   allocated = new T[size];
   aligned = allocated;
-  for (size_t i = 0; i < size; i++) {
-    aligned[i] = data[i];
-  }
+  std::copy(data, data + size, aligned);
 }
 
 /**
- * @brief Copy Constructor. This constructor is used to initialize a MemRef object with another MemRef object.
- 	- Copy `offset` and `size` directly.
+ * @brief Copy Constructor. This constructor is used to initialize a MemRef
+ object with another MemRef object.
+        - Copy `offset` and `size` directly.
  *  - Elementwise copy `sizes` array.
  *  - Calculate `strides`.
  *  - Allocate new space.
@@ -86,9 +86,7 @@ MemRef<T, N>::MemRef(const MemRef<T, N> &other)
   setStrides();
   allocated = new T[size];
   aligned = allocated;
-  for (size_t i = 0; i < size; i++) {
-    aligned[i] = other.aligned[i];
-  }
+  std::copy(other.aligned, other.aligned + size, aligned);
 }
 
 /**
@@ -104,30 +102,29 @@ MemRef<T, N>::MemRef(const MemRef<T, N> &other)
  */
 template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(const MemRef<T, N> &other) {
-  if (this != &other) {
-    this->offset = other.offset;
-    this->size = other.size;
-    for (size_t i = 0; i < N; i++) {
-      this->sizes[i] = other.sizes[i];
-    }
-    setStrides();
-    // Free the original aligned and allocated space.
-    delete[] allocated;
-    // Allocate new space and deep copy.
-    T *ptr = new T[size];
-    for (size_t i = 0; i < size; i++) {
-      ptr[i] = other.aligned[i];
-    }
-    aligned = ptr;
-    allocated = ptr;
+  this->offset = other.offset;
+  this->size = other.size;
+  for (size_t i = 0; i < N; i++) {
+    this->sizes[i] = other.sizes[i];
   }
+  setStrides();
+  // Free the original aligned and allocated space.
+  delete[] allocated;
+  // Allocate new space and deep copy.
+  T *ptr = new T[size];
+  for (size_t i = 0; i < size; i++) {
+    ptr[i] = other.aligned[i];
+  }
+  aligned = ptr;
+  allocated = ptr;
   return *this;
 }
 
 /**
- * @brief Move Constructor. This constructor is used to initialize a MemRef object from a rvalue.
- * The move constructor steals the resources of the original object.
- * Note that the original object no longer owns the members and spaces.
+ * @brief Move Constructor. This constructor is used to initialize a MemRef
+ * object from a rvalue. The move constructor steals the resources of the
+ * original object. Note that the original object no longer owns the members and
+ * spaces.
  * - Steal members from the original object.
  * - Assign the NULL pointer to the original aligned and allocated members to
  *   avoid the double free error.
@@ -146,7 +143,8 @@ MemRef<T, N>::MemRef(MemRef<T, N> &&other) noexcept
 }
 
 /**
- * @brief Move Assignment Operator. Note that the original object no longer owns the members and spaces.
+ * @brief Move Assignment Operator. Note that the original object no longer owns
+ * the members and spaces.
  * - Check if they are the same object.
  * - Free the data space of this object to avoid memory leaks.
  * - Steal members from the original object.
@@ -157,27 +155,27 @@ MemRef<T, N>::MemRef(MemRef<T, N> &&other) noexcept
  */
 template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(MemRef<T, N> &&other) noexcept {
-  if (this != &other) {
-    // Free the original aligned and allocated space.
-    delete[] allocated;
-    // Steal members of the original object.
-    std::swap(strides, other.strides);
-    std::swap(offset, other.offset);
-    std::swap(sizes, other.sizes);
-    std::swap(size, other.size);
-    std::swap(allocated, other.allocated);
-    std::swap(aligned, other.aligned);
-    // Assign the NULL pointer to the original aligned and allocated members to
-    // avoid the double free error.
-    other.allocated = other.aligned = nullptr;
-  }
+  // Free the original aligned and allocated space.
+  delete[] allocated;
+  // // Steal members of the original object.
+  // std::swap(strides, other.strides);
+  // std::swap(offset, other.offset);
+  // std::swap(sizes, other.sizes);
+  // std::swap(size, other.size);
+  // std::swap(allocated, other.allocated);
+  // std::swap(aligned, other.aligned);
+  // // Assign the NULL pointer to the original aligned and allocated members to
+  // // avoid the double free error.
+  // other.allocated = other.aligned = nullptr;
+  MemRef<T, N>::MemRef(other);
   return *this;
 }
 
 /**
- * @brief MemRef Destructor. Note that the original object no longer owns the members and spaces.
- * Note that the `allocated` and `aligned` point to the same address, so it is
- * enough to release the space of the `allocated` pointer in the destructor.
+ * @brief MemRef Destructor. Note that the original object no longer owns the
+ * members and spaces. Note that the `allocated` and `aligned` point to the same
+ * address, so it is enough to release the space of the `allocated` pointer in
+ * the destructor.
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
@@ -201,10 +199,10 @@ template <typename T, std::size_t N> T *MemRef<T, N>::getData() {
 }
 /**
  * @brief Get the element at index.
- * Return a const refrence of specific element if the container data size is greater than zero.
- * If the data size is negative or zero, which means no space is allocated for
- * the container data pointer, this operator does not allow to return the data
- * element.
+ * Return a const refrence of specific element if the container data size is
+ * greater than zero. If the data size is negative or zero, which means no space
+ * is allocated for the container data pointer, this operator does not allow to
+ * return the data element.
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
@@ -216,10 +214,10 @@ const T &MemRef<T, N>::operator[](size_t index) const {
 
 /**
  * @brief Get the element at index.
- * Return a non-const refrence of specific element if the container data size is greater than zero.
- * If the data size is negative or zero, which means no space is allocated for
- * the container data pointer, this operator does not allow to return the data
- * element.
+ * Return a non-const refrence of specific element if the container data size is
+ * greater than zero. If the data size is negative or zero, which means no space
+ * is allocated for the container data pointer, this operator does not allow to
+ * return the data element.
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
@@ -273,7 +271,7 @@ MemRef<T, N>::MemRef(std::unique_ptr<T> &uptr, intptr_t *sizes,
 }
 
 /**
- * @brief Release the aligned and allocated field. 
+ * @brief Release the aligned and allocated field.
  * @tparam T represents the datatype to be used
  * @tparam N represents the number of dimensions
  */
