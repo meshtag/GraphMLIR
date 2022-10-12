@@ -22,21 +22,37 @@
 #ifndef INCLUDE_INTERFACE_GRAPH_H
 #define INCLUDE_INTERFACE_GRAPH_H
 
-#include <Interface/memref.h>
+#include <Interface/Container.h>
 
 namespace graph {
 namespace detail {
+
+enum graph_type {
+  GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED,
+  GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_LIST_DIRECTED_WEIGHTED,
+  GRAPH_ADJ_MATRIX_UNDIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
+  GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
+  GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED,
+  GRAPH_INC_MATRIX_UNDIRECTED_WEIGHTED,
+  GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED,
+  GRAPH_INC_MATRIX_DIRECTED_WEIGHTED,
+};
+
 // Functions present inside graph::detail are not meant to be called by users
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-                      MemRef_descriptor graph3);
+void _mlir_ciface_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
+                      MemRef<float, 2> graph3);
 }
 } // namespace detail
 
-void graph_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-               MemRef_descriptor graph3) {
+void graph_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
+               MemRef<float, 2> graph3) {
   detail::_mlir_ciface_bfs(graph1, graph2, graph3);
 }
 } // namespace graph

@@ -32,3 +32,9 @@ cmake -G Ninja .. \
 ninja bfsExample
 cd bin && ./bfsExample
 ```
+## Instructions for generating docs 
+```
+Use doxywizard for generating docs automatically from relevant source directories.
+```
+#### After this go to docs  and open index.html in the html subdirectory with your prefered browser.
+
