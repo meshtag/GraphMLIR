@@ -62,6 +62,8 @@ public:
   T &operator[](size_t index);
   // release the pointer
   T *release();
+  //comparision operator
+  bool operator==(const MemRef<T, N> &other);
 
 protected:
   // Default constructor.

@@ -38,8 +38,13 @@ int main() {
   std::cout << "Printing graph in format it was entered ( "
                "GRAPH_ADJ_MARIX_DIRECTED_WEIGHTED )\n";
   sample_graph.printGraphOg();
-
+	
   auto x = sample_graph.get_Memref();
+  auto x1 = sample_graph.get_Memref();
+
+  if (x == x1) {
+		std::cout<< "the two memref are equal "<<std::endl;
+	}
 
   // this will print the linear 2d matrix in 2d form.
 
