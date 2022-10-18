@@ -27,12 +27,12 @@ int main() {
 
   // use for weighted graph
   Graph<float, 2> sample_graph(
-      graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED, 5);
-  sample_graph.addEdge(0, 2, 1);
-  sample_graph.addEdge(2, 3, 3);
-  sample_graph.addEdge(3, 2, 3);
-  sample_graph.addEdge(2, 2, 6);
-  sample_graph.addEdge(1, 2, 2);
+      graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED, 6);
+  	sample_graph.addEdge(1,0,2);
+	sample_graph.addEdge(3,1,3);
+	sample_graph.addEdge(4,1,4);
+	sample_graph.addEdge(4,2,5);
+	sample_graph.addEdge(5,1,6);
 
   // this will print the original graph.
   std::cout << "Printing graph in format it was entered ( "

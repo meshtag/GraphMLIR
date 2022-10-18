@@ -76,10 +76,10 @@ if (BUILD_TESTS)
   FetchContent_MakeAvailable(googletest)
 endif()
 
-if (BUILD_TESTS)
-  enable_testing()
-  add_subdirectory(tests)
-endif()
+# if (BUILD_TESTS)
+#   enable_testing()
+#   add_subdirectory(tests)
+# endif()
 
 # Add MLIR and LLVM headers to the include path
 include_directories(${LLVM_INCLUDE_DIRS})
