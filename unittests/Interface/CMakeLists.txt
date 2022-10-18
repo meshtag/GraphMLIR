@@ -4,7 +4,7 @@ add_executable(
 	ContainerTest.cpp
 )
 
-target_link_libraries(InterfaceTests gtest gtest_main pthread)
+target_link_libraries(InterfaceTests gtest gtest_main pthread BFS)
 
 add_dependencies(InterfaceTests Container GraphContainer)
 
