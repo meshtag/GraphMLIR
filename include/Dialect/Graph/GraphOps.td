@@ -42,4 +42,21 @@ def Graph_BFSOp : Graph_Op<"bfs">
   }];
 }
 
+def Graph_FloydWarshallOp : Graph_Op<"FloydWarshall">
+{
+  let summary = [{The Floyd Warshall Algorithm is for solving all pairs shortest path problems. 
+  The problem is to find the shortest distances between every pair of vertices in a given 
+  edge-weighted directed Graph. 
+  }];
+
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "inputMemref",
+                           [MemRead]>:$memrefI,
+                       Arg<AnyRankedOrUnrankedMemRef, "outputMemref",
+                           [MemRead]>:$memrefCO);
+
+  let assemblyFormat = [{
+    $memrefI `,` $memrefCO attr-dict `:` type($memrefI) `,` type($memrefCO) 
+  }];
+}
+
 #endif // Graph_GraphOPS_TD
