@@ -40,7 +40,7 @@ int main() {
   size[1] = 4;
   MemRef<int, 2> output = MemRef<int, 2>(size);
 
-  graph::_mlir_ciface_floyd_warshall(&x, &output);
+  graph::floyd_warshall(&x, &output);
   auto y = output.getData();
 
   std::cout<<"Floyd Warshall Output!"<<"\n";

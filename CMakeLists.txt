@@ -61,6 +61,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GraphMLIR_BINARY_DIR})
 
 set(GraphMLIR_EXAMPLES OFF CACHE BOOL "Build examples")
 
+set(GraphMLIR_BENCHMARK OFF CACHE BOOL "Benchmark the Graph Algorithms")
+
 # Add MLIR and LLVM headers to the include path
 include_directories(${LLVM_INCLUDE_DIRS})
 include_directories(${MLIR_INCLUDE_DIRS})
@@ -83,4 +85,45 @@ add_subdirectory(tools)
 
 if(GraphMLIR_EXAMPLES)
   add_subdirectory(examples)
+endif()
+
+if(GraphMLIR_BENCHMARK)
+#-------------------------------------------------------------------------------
+# Deploy google/benchmark
+#-------------------------------------------------------------------------------
+
+  message(STATUS "Configuring benchmarks: google")
+
+  include(ExternalProject)
+
+  ExternalProject_Add(project_googlebenchmark
+    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_TAG "v1.6.0"
+    GIT_SHALLOW 1
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/vendor/benchmark
+    TIMEOUT 10
+    BUILD_BYPRODUCTS <INSTALL_DIR>/lib/${CMAKE_STATIC_LIBRARY_PREFIX}benchmark${CMAKE_STATIC_LIBRARY_SUFFIX}
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/vendor/benchmark
+      -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+      -DBENCHMARK_ENABLE_TESTING=OFF
+    UPDATE_COMMAND ""
+    TEST_COMMAND "")
+
+  ExternalProject_Get_Property(project_googlebenchmark INSTALL_DIR)
+
+  file(MAKE_DIRECTORY ${INSTALL_DIR}/include)
+  add_library(GoogleBenchmark STATIC IMPORTED)
+  target_include_directories(GoogleBenchmark INTERFACE ${INSTALL_DIR}/include)
+  set_property(TARGET GoogleBenchmark PROPERTY IMPORTED_LOCATION
+    "${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}benchmark${CMAKE_STATIC_LIBRARY_SUFFIX}")
+
+  add_dependencies(GoogleBenchmark project_googlebenchmark)
+
+  find_package(Threads)
+  target_link_libraries(GoogleBenchmark INTERFACE Threads::Threads)
+endif()
+
+if(GraphMLIR_BENCHMARK)
+  add_subdirectory(benchmarks)
 endif()
