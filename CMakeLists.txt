@@ -71,15 +71,9 @@ if (BUILD_TESTS)
     googletest
     URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
   )
-
   set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
   FetchContent_MakeAvailable(googletest)
 endif()
-
-# if (BUILD_TESTS)
-#   enable_testing()
-#   add_subdirectory(tests)
-# endif()
 
 # Add MLIR and LLVM headers to the include path
 include_directories(${LLVM_INCLUDE_DIRS})
@@ -100,7 +94,7 @@ include_directories(${GraphMLIR_SOURCE_DIR}/lib)
 add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(tools)
-add_subdirectory(unittests)
+add_subdirectory(tests/unittests)
 
 if(GraphMLIR_EXAMPLES)
   add_subdirectory(examples)

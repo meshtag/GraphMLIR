@@ -299,12 +299,9 @@ bool MemRef<T, N>::operator==(const MemRef<T, N> &other) {
 
   for (intptr_t i = 0; i < x1; i++) {
     for (intptr_t j = 0; j < y1; j++) {
-      if (this->allocated[i * x1 + y1] != other.allocated[i * x1 + y1]) {
-        return false;
+      if(this->aligned[i * x1 + y1] != other.aligned[i * x1 + y1]) {
+      	return false;
       }
-      // if(this->aligned[i * x1 + y1] != other.aligned[i * x1 + y1]) {
-      // 	return false;
-      // }
     }
   }
 

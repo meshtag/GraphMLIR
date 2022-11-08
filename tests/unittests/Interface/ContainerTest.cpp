@@ -24,7 +24,6 @@ protected:
   void TearDown() override {}
 };
 
-
 // Copy constructor.
 TEST_F(MemRefTest, CopyConstructor2DMemref) {
   // new hard codede MemRef object.
@@ -34,7 +33,6 @@ TEST_F(MemRefTest, CopyConstructor2DMemref) {
   MemRef<float, 2> m(aligned, sizes, 0);
   MemRef<float, 2> copy(m);
   EXPECT_EQ(m == copy, true);
- 
 }
 
 // Copy assignment operator.
@@ -56,11 +54,13 @@ TEST_F(MemRefTest, MoveConstructor2DMemref) {
   intptr_t sizes[2] = {6, 6};
   MemRef<float, 2> m(aligned, sizes, 0);
 
-  //move
+  // create a copy of the the hardcoded MemRef and compare it with the stolen
+  // memref
+  MemRef<float, 2> m_copy = m;
   MemRef<float, 2> move = std::move(m);
 
-  //test
-  EXPECT_EQ(m == move, true);
+  // test
+  EXPECT_EQ(m_copy == move, true);
 }
 
 // Move assignment operator.
@@ -70,12 +70,11 @@ TEST_F(MemRefTest, MoveAssignment2DMemref) {
                      0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   intptr_t sizes[2] = {6, 6};
   MemRef<float, 2> m(aligned, sizes, 0);
-  
-  //move
+
+  // create a copy of the hardcoded MemRef and compare it with the stolen MemRef
+  MemRef<float, 2> m_copy = m;
   MemRef<float, 2> move = std::move(m);
 
-  //test
-  EXPECT_EQ(m == move, true);
-
+  // test
+  EXPECT_EQ(m_copy == move, true);
 }
-
