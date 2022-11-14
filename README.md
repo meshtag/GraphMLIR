@@ -34,16 +34,17 @@ cd bin && ./bfsExample
 ```
 ## Benchmark project
 ```
-cmake -G Ninja .. \   
-    -DMLIR_DIR=$PWD/../llvm/build/lib/cmake/mlir \    
-    -DLLVM_DIR=$PWD/../llvm/build/lib/cmake/llvm \   
-    -DLLVM_ENABLE_ASSERTIONS=ON \    
-    -DCMAKE_BUILD_TYPE=RELEASE \    
-    -DGraphMLIR_BENCHMARK=ON 
+cmake -G Ninja .. \
+    -DMLIR_DIR=$PWD/../llvm/build/lib/cmake/mlir \
+    -DLLVM_DIR=$PWD/../llvm/build/lib/cmake/llvm \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DCMAKE_BUILD_TYPE=RELEASE \
+    -DGraphMLIR_BENCHMARK=ON \
+    -DLEMON_DIR=/PATH/TO/LEMON/SOURCE/CODE
 ninja graph-processing-benchmark
 cd bin && ./graph-processing-benchmark
 ```
-*Note* : For benchmarking install `lemon` and `BOOST` library in system.
+*Note* : Rename the `lemon.1.x.x` folder to `lemon`.  For benchmarking install `BOOST` library in system. 
 
 ## Instructions for generating docs 
 ```

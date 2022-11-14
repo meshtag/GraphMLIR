@@ -1,7 +1,17 @@
-# find_package(LEMON)
+ADD_SUBDIRECTORY(${LEMON_DIR} ./lemon)
+SET(LEMON_INCLUDE_DIRS
+  ${LEMON_DIR}
+  ${CMAKE_BINARY_DIR}/benchmarks/lemon
+)
+SET(LEMON_LIBRARIES lemon)
+UNSET(LEMON_ROOT_DIR CACHE)
+UNSET(LEMON_DIR CACHE)
+UNSET(LEMON_INCLUDE_DIR CACHE)
+UNSET(LEMON_LIBRARY CACHE)
 
-# add_subdirectory(${LEMON_DIR} ./lemon)
-# include_directories(${LEMON_DIR})
+INCLUDE_DIRECTORIES(
+     ${LEMON_INCLUDE_DIRS}
+)
 
 add_custom_command(OUTPUT graph.o
 COMMAND ${GraphMLIR_BINARY_DIR}/graph-opt ${GraphMLIR_EXAMPLES_DIR}/graph.mlir 
@@ -30,14 +40,12 @@ add_executable(graph-processing-benchmark
 
 )
 
-# target_link_directories(graph-processing-benchmark PRIVATE ${LEMON_DIR}/build/lemon/)
-# target_link_directories(graph-processing-benchmark PRIVATE ${GraphMLIR_BINARY_DIR}/../build/lemon/lemon/)
 
 find_package(Boost 1.40 COMPONENTS program_options REQUIRED)
 
 target_link_libraries(graph-processing-benchmark
   PRIVATE
-  emon
+  ${LEMON_LIBRARIES}
   Boost::program_options
   graph
   GoogleBenchmark
