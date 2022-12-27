@@ -42,4 +42,20 @@ def Graph_BFSOp : Graph_Op<"bfs">
   }];
 }
 
+def Graph_DjikstraOp : Graph_Op<"djikstra"> {
+  let summary = [{
+    djikstra's algo
+  }];
+
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "inputMemref",
+                           [MemRead]>:$memrefI,
+                       Arg<AnyRankedOrUnrankedMemRef, "outputMemref",
+                           [MemRead]>:$memrefCO);
+
+  let assemblyFormat = [{
+  $memrefI `,` $memrefCO attr-dict `:` type($memrefI) `,` type($memrefCO) 
+  }];                         
+
+}
+
 #endif // Graph_GraphOPS_TD
