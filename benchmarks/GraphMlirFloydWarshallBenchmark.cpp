@@ -26,10 +26,10 @@
 using namespace std;
 
 namespace {
-Graph<int, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
+Graph<float, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
                            4);
 intptr_t size[2];
-MemRef<int, 2> *input;
+MemRef<float, 2> *input;
 } // namespace
 
 void initializeGraphMLIRFloydWarshall() {
@@ -45,13 +45,13 @@ void initializeGraphMLIRFloydWarshall() {
   size[0] = 4;
   size[1] = 4;
 
-  MemRef<int, 2> output = MemRef<int, 2>(size);
+  MemRef<float, 2> output = MemRef<float, 2>(size);
 }
 
 // Benchmarking function.
 static void GraphMLIR_FloydWarshall(benchmark::State &state) {
   for (auto _ : state) {
-    MemRef<int, 2> output = MemRef<int, 2>(size);
+    MemRef<float, 2> output = MemRef<float, 2>(size);
     for (int i = 0; i < state.range(0); ++i) {
       graph::floyd_warshall(input, &output);
     }
@@ -65,7 +65,7 @@ void generateResultGraphMLIRFloydWarshall() {
   initializeGraphMLIRFloydWarshall();
   cout << "-------------------------------------------------------\n";
   cout << "[ GraphMLIR Floyd Warshall Result Information ]\n";
-  MemRef<int, 2> generateResult(size);
+  MemRef<float, 2> generateResult(size);
   graph::floyd_warshall(input, &generateResult);
 
   // auto y = generateResult.getData();

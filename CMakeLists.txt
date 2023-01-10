@@ -72,6 +72,7 @@ include_directories(${GraphMLIR_MAIN_INCLUDE_DIR})
 include_directories(${GraphMLIR_INCLUDE_DIR})
 include_directories(${GraphMLIR_INCLUDE_DIR}/Interface)
 include_directories(${GraphMLIR_INCLUDE_DIR}/Dialect)
+include_directories(${GraphMLIR_INCLUDE_DIR}/Utility)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/Dialect)
 include_directories(${GraphMLIR_SOURCE_DIR}/lib)
 

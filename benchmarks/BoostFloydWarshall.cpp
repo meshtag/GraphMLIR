@@ -24,6 +24,8 @@
 #include <boost/graph/undirected_graph.hpp>
 #include <boost/graph/exterior_property.hpp>
 #include <boost/graph/floyd_warshall_shortest.hpp>
+#include <vector>
+#include <Utility/Utils.h>
 
 using namespace std;
 
@@ -48,21 +50,27 @@ Graph g;
 
 void initializeBoostFLoydWarshall() {
 
-  const int num_edges = 4;
+  const int vertices = 4;
+  int num_edges = vertices * (vertices -1) / 2;
 
   // define edges
-  int edges[] = {1, 2, 2, 3, 3, 4, 4, 1, 1, 3, 2, 4};
+  // int edges[] = {1, 2, 2, 3, 3, 4, 4, 1, 1, 3, 2, 4};
 
-  t_weight weight[] = {4, 3, 3, 6, 2, 2};
+  // t_weight weight[] = {4, 3, 3, 6, 2, 2};
+
+  std::vector<int> edges;
+  std::vector<int> weight;
+
+  graph::generateRandomGraph(edges, weight, vertices);
 
   for (std::size_t k = 0; k < num_edges; ++k)
     boost::add_edge(edges[k * 2] - 1, edges[k * 2 + 1] - 1, weight[k], g);
-
   WeightMap weight_pmap = boost::get(boost::edge_weight, g);
-
   // set the distance matrix to receive the floyd warshall output
   DistanceMatrix distances(num_vertices(g));
   DistanceMatrixMap dm(distances, g);
+
+ 
 }
 
 // Benchmarking function.

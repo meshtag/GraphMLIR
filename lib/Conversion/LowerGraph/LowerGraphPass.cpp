@@ -92,7 +92,7 @@ public:
     Value c0 = rewriter.create<ConstantIndexOp>(loc, 0);
     Value c1 = rewriter.create<ConstantIndexOp>(loc, 1);
     Value V = rewriter.create<memref::DimOp>(loc, input, c0);
-
+    
     SmallVector<int64_t, 8> step{1,1};
 
     buildAffineLoopNest(
@@ -104,8 +104,18 @@ public:
     
     SmallVector<Value, 8> lowerBounds(3, c0);
     SmallVector<Value, 8> upperBounds(3, V);
-    SmallVector<int64_t, 8> steps{1,1,1};
-    
+    SmallVector<int64_t, 8> steps{1,1,4};
+
+    IntegerType i32 = IntegerType::get(ctx, 32);
+    FloatType f32 = FloatType::getF32(ctx);
+    VectorType vectorTy32 = VectorType::get({4}, f32);
+    VectorType vectorred = VectorType::get({2,4}, f32);
+    Value one = rewriter.create<ConstantFloatOp>(loc, APFloat(float(1)), f32);
+    Value mx = rewriter.create<ConstantFloatOp>(loc, APFloat(float(10000)), f32);
+    Value vecOne = rewriter.create<vector::BroadcastOp>(loc, vectorTy32, one);
+    Value vecMx = rewriter.create<vector::BroadcastOp>(loc, vectorTy32, mx);
+    Value temp = rewriter.create<vector::BroadcastOp>(loc, vectorred, one);
+    // rewriter.create<vector::PrintOp>(loc, vecOne);
     buildAffineLoopNest(
     rewriter, loc, lowerBounds, upperBounds, steps,
     [&](OpBuilder &builder, Location loc, ValueRange ivs) {
@@ -113,9 +123,9 @@ public:
         Value y = builder.create<memref::LoadOp>(loc, output, ValueRange{ivs[0], ivs[2]});
         Value z = builder.create<memref::LoadOp>(loc, output, ValueRange{ivs[1], ivs[2]});
 
-        Value temp = builder.create<AddIOp>(loc, x, y);
+        Value temp = builder.create<AddFOp>(loc, x, y);
 
-        Value checkCond = builder.create<CmpIOp>(loc, CmpIPredicate::slt, temp, z);
+        Value checkCond = builder.create<CmpFOp>(loc, CmpFPredicate::OLT, temp, z);
 
         builder.create<scf::IfOp>(
           loc, checkCond, [&](OpBuilder &builder, Location loc) {
@@ -126,6 +136,20 @@ public:
           //   builder.create<scf::YieldOp>(loc);
           // }
         );
+        // Value x = builder.create<memref::LoadOp>(loc, output, ValueRange{ivs[1], ivs[0]});
+        // Value vecik = builder.create<vector::BroadcastOp>(loc, vectorTy32, x);
+        // Value vecij = builder.create<vector::LoadOp>(loc, vectorTy32, output, ValueRange{ivs[1], ivs[2]});
+        // Value veckj = builder.create<vector::LoadOp>(loc, vectorTy32, output, ValueRange{ivs[0], ivs[2]});
+        // Value vecikj = builder.create<vector::FMAOp>(loc, veckj, vecOne, vecik);
+        // Value y = builder.create<vector::InsertOp>(loc, vecij, temp, ArrayRef<int64_t>{0});
+        // Value z = builder.create<vector::InsertOp>(loc, vecikj, y, ArrayRef<int64_t>{1});
+        // Value res = builder.create<vector::MultiDimReductionOp>(loc, z, vecMx, ArrayRef<bool>{true,false}, vector::CombiningKind::MINF);
+        // // builder.create<vector::PrintOp>(loc, vecik);
+        // // builder.create<vector::PrintOp>(loc, vecij);
+        // // builder.create<vector::PrintOp>(loc, veckj);
+        // // builder.create<vector::PrintOp>(loc, vecikj);
+        // // builder.create<vector::PrintOp>(loc, res);
+        // builder.create<vector::StoreOp>(loc, res, output, ValueRange{ivs[1], ivs[2]});
 
     });
 

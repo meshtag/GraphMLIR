@@ -50,7 +50,7 @@ void _mlir_ciface_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
 }
 
 extern "C" {
-void _mlir_ciface_floyd_warshall(MemRef<int, 2> *graph1, MemRef<int, 2> *graph2);
+void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1, MemRef<float, 2> *graph2);
 }
 
 } // namespace detail
@@ -60,7 +60,7 @@ void bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
   detail::_mlir_ciface_bfs(graph1, graph2, graph3);
 }
 
-void floyd_warshall(MemRef<int, 2> *input, MemRef<int, 2> *output) {
+void floyd_warshall(MemRef<float, 2> *input, MemRef<float, 2> *output) {
   detail::_mlir_ciface_floyd_warshall(input, output);
 }
 } // namespace graph

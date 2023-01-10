@@ -16,8 +16,11 @@ INCLUDE_DIRECTORIES(
 add_custom_command(OUTPUT graph.o
 COMMAND ${GraphMLIR_BINARY_DIR}/graph-opt ${GraphMLIR_EXAMPLES_DIR}/graph.mlir 
         -lower-graph -lower-affine -convert-scf-to-cf 
-        -convert-vector-to-llvm -convert-memref-to-llvm 
-        -convert-func-to-llvm='emit-c-wrappers=1' 
+        -test-vector-multi-reduction-lowering-patterns 
+        -convert-vector-to-llvm 
+        -convert-memref-to-llvm
+        -llvm-request-c-wrappers
+        -convert-func-to-llvm
         -reconcile-unrealized-casts | 
         ${LLVM_MLIR_BINARY_DIR}/mlir-translate --mlir-to-llvmir |
         ${LLVM_MLIR_BINARY_DIR}/llc -mtriple=${GraphMLIR_OPT_TRIPLE} -mattr=${GraphMLIR_OPT_ATTR} 
@@ -32,10 +35,10 @@ PROPERTIES
 LINKER_LANGUAGE C)
 
 add_executable(graph-processing-benchmark
-  GraphMlirFloydWarshallBenchmark.cpp
   FloydWarshall.cpp
   BoostFloydWarshall.cpp
   LemonBFS.cpp
+  GraphMlirFloydWarshallBenchmark.cpp
   Main.cpp
 
 )
