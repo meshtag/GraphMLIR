@@ -46,14 +46,14 @@ enum graph_type {
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
-                      MemRef<float, 2> graph3);
+void _mlir_ciface_bfs(MemRef<int, 2> graph, MemRef<int, 1> parent,
+                      MemRef<int, 1> distance);
 }
 } // namespace detail
 
-void graph_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
-               MemRef<float, 2> graph3) {
-  detail::_mlir_ciface_bfs(graph1, graph2, graph3);
+void graph_bfs(MemRef<int, 2> graph, MemRef<int, 1> parent,
+               MemRef<int, 1> distance) {
+  detail::_mlir_ciface_bfs(graph, parent, distance);
 }
 } // namespace graph
 

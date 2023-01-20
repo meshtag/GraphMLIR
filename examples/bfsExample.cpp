@@ -14,20 +14,10 @@
 #include <vector>
 
 int main() {
-
-  // Graph<float, 2>
-  // sample_graph(graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED, 5);
-
-  // use for unweighted graph
-  // sample_graph.addEdge(0,2);
-  // sample_graph.addEdge(2,3);
-  // sample_graph.addEdge(3,2);
-  // sample_graph.addEdge(2,2);
-  // sample_graph.addEdge(1,2);
-
   // use for weighted graph
-  Graph<float, 2> sample_graph(
-      graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED, 5);
+  Graph<int, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
+                             5);
+
   sample_graph.addEdge(0, 2, 1);
   sample_graph.addEdge(2, 3, 3);
   sample_graph.addEdge(3, 2, 3);
@@ -39,14 +29,24 @@ int main() {
                "GRAPH_ADJ_MARIX_DIRECTED_WEIGHTED )\n";
   sample_graph.printGraphOg();
 
-  auto x = sample_graph.get_Memref();
+  auto graph = sample_graph.get_Memref();
+
+  // Distance and Parent vector
+  intptr_t size[1] = {5};
+
+  MemRef<int, 1> parent = MemRef<int, 1>(size);
+  MemRef<int, 1> distance = MemRef<int, 1>(size);
 
   // this will print the linear 2d matrix in 2d form.
-
   std::cout
       << "Printing graph in form of 2d matrix after conversion to memref\n";
   sample_graph.printGraph();
-  graph::graph_bfs(x, x, x);
-  x.release();
+
+  graph::graph_bfs(graph, parent, distance);
+
+  graph.release();
+  parent.release();
+  distance.release();
+
   std::cout << "End of the program! \n";
 }
