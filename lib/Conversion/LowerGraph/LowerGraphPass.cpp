@@ -34,6 +34,7 @@ using namespace mlir;
 using namespace graph;
 using namespace vector;
 using namespace mlir::arith;
+using namespace mlir::index;
 
 //===----------------------------------------------------------------------===//
 // Rewrite Pattern
@@ -54,14 +55,26 @@ public:
     auto loc = op->getLoc();
     auto ctx = op->getContext();
 
-    // Create constant indices.
-    Value c0 = rewriter.create<ConstantIndexOp>(loc, 0);
-    Value c1 = rewriter.create<ConstantIndexOp>(loc, 1);
+    // Types
+    IntegerType i32 = IntegerType::get(ctx, 32);
+    IndexType it = IndexType::get(ctx);
+    VectorType qt = VectorType::get({1000}, it);
 
-    // Register operand values.
-    Value m1 = op->getOperand(0);
-    Value m2 = op->getOperand(1);
-    Value m3 = op->getOperand(2);
+    // Register operands
+    Value graph = op->getOperand(0);
+    Value parent = op->getOperand(1);
+    Value distance = op->getOperand(2);
+
+    Value zero = rewriter.create<ConstantIndexOp>(loc, 0);
+
+    // Queue
+    Value queue = rewriter.create<vector::BroadcastOp>(loc, qt, zero);
+    Value front = rewriter.create<ConstantIndexOp>(loc, 0);
+    Value rear = rewriter.create<ConstantIndexOp>(loc, 0);
+
+    // Condition to check if queue is empty
+
+    // rewriter.create<scf::WhileOp>(loc);
 
     rewriter.eraseOp(op);
     return success();
