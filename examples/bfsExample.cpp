@@ -42,7 +42,7 @@ int main() {
       << "Printing graph in form of 2d matrix after conversion to memref\n";
   sample_graph.printGraph();
 
-  graph::graph_bfs(graph, parent, distance);
+  graph::graph_bfs(&graph, &parent, &distance);
 
   graph.release();
   parent.release();
