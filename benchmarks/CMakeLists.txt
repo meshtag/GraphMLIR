@@ -37,8 +37,8 @@ LINKER_LANGUAGE C)
 add_executable(graph-processing-benchmark
   FloydWarshall.cpp
   BoostFloydWarshall.cpp
-  LemonBFS.cpp
   GraphMlirFloydWarshallBenchmark.cpp
+  LemonBFS.cpp
   Main.cpp
 
 )

@@ -22,28 +22,31 @@
 #include <Interface/GraphContainer.h>
 #include <Interface/graph.h>
 #include <benchmark/benchmark.h>
+#include <Utility/Utils.h>
 
 using namespace std;
 
 namespace {
 Graph<float, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
-                           4);
+                           100);
 intptr_t size[2];
 MemRef<float, 2> *input;
 } // namespace
 
 void initializeGraphMLIRFloydWarshall() {
-  sample_graph.addEdge(0, 1, 4);
-  sample_graph.addEdge(1, 2, 3);
-  sample_graph.addEdge(2, 3, 3);
-  sample_graph.addEdge(3, 0, 6);
-  sample_graph.addEdge(0, 2, 2);
-  sample_graph.addEdge(1, 3, 2);
+  // sample_graph.addEdge(0, 1, 4);
+  // sample_graph.addEdge(1, 2, 3);
+  // sample_graph.addEdge(2, 3, 3);
+  // sample_graph.addEdge(3, 0, 6);
+  // sample_graph.addEdge(0, 2, 2);
+  // sample_graph.addEdge(1, 3, 2);
+
+  graph::generateRandomGraph(&sample_graph, 100);
 
   input = &sample_graph.get_Memref();
 
-  size[0] = 4;
-  size[1] = 4;
+  size[0] = 100;
+  size[1] = 100;
 
   MemRef<float, 2> output = MemRef<float, 2>(size);
 }

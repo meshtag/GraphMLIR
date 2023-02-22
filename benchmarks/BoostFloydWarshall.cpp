@@ -50,7 +50,7 @@ Graph g;
 
 void initializeBoostFLoydWarshall() {
 
-  const int vertices = 4;
+  const int vertices = 100;
   int num_edges = vertices * (vertices -1) / 2;
 
   // define edges

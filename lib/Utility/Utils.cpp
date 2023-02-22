@@ -30,7 +30,7 @@
 
 using namespace std;
 namespace graph{
-void generateRandomGraph(Graph<float, 2> *graph, int vertices, int maxWeight, int randomUpperLimit, int randomLowerLimit){
+void inline generateRandomGraph(Graph<float, 2> *graph, int vertices, int maxWeight, int randomUpperLimit, int randomLowerLimit){
     // printf("Inside the function create_graph\n");
     std::set<std::pair<int, int>> container;
     std::set<std::pair<int, int>>::iterator it;
@@ -73,7 +73,7 @@ void generateRandomGraph(Graph<float, 2> *graph, int vertices, int maxWeight, in
     // }
 }
 
-void generateRandomGraph(std::vector<int> &edge, std::vector<int> &weight, int vertices, int maxWeight, int randomUpperLimit, int randomLowerLimit){
+void inline generateRandomGraph(std::vector<int> &edge, std::vector<int> &weight, int vertices, int maxWeight, int randomUpperLimit, int randomLowerLimit){
     // printf("Inside the function create_graph\n");
     std::set<std::pair<int, int>> container;
     std::set<std::pair<int, int>>::iterator it;

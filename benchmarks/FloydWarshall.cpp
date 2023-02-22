@@ -25,7 +25,7 @@
 
 using namespace std;
 
-#define V 4
+#define V 100
 
 namespace {
 int input[V][V];
@@ -55,7 +55,7 @@ void initializeFloydWarshall() {
 
   for (int i = 0; i < V; i++) {
     for (int j = 0; j < V; j++) {
-      input[i][j] = data[i][j];
+      input[i][j] = 100;
     }
   }
   memset(output, 0, sizeof(output));

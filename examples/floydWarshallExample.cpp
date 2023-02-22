@@ -26,7 +26,7 @@ int main() {
   // sample_graph.addEdge(0, 2, 2);
   // sample_graph.addEdge(1, 3, 2);
 
-  generateRandomGraph(&sample_graph, MAX_VERTICES);
+  graph::generateRandomGraph(&sample_graph, MAX_VERTICES);
 
   // this will print the original graph.
   std::cout << "Printing graph in format it was entered ( "

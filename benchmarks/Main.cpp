@@ -20,19 +20,19 @@
 
 #include <benchmark/benchmark.h>
 
-// void initializeGraphMLIRFloydWarshall();
+void initializeGraphMLIRFloydWarshall();
 void initializeFloydWarshall();
 void initializeLemonBFS();
 void initializeBoostFLoydWarshall();
 
-// void generateResultGraphMLIRFloydWarshall();
+void generateResultGraphMLIRFloydWarshall();
 void generateResultFloydWarshall();
 void generateResultLemonBFS();
 void generateResultBoostFLoydWarshall();
 
 int main(int argc, char **argv) {
 
-  // initializeGraphMLIRFloydWarshall();
+  initializeGraphMLIRFloydWarshall();
   initializeFloydWarshall();
   initializeLemonBFS();
   initializeBoostFLoydWarshall();
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
 
-  // generateResultGraphMLIRFloydWarshall();
+  generateResultGraphMLIRFloydWarshall();
   generateResultFloydWarshall();
   generateResultLemonBFS();
   generateResultBoostFLoydWarshall();
