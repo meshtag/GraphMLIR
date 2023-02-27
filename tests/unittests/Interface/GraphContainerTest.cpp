@@ -17,17 +17,10 @@ TEST_F(GraphContainerTest, adjListUndirectedUnweighted) {
   graph.addEdge(1, 4);
   graph.addEdge(2, 4);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linera 2D form: " << std::endl;
-  graph.printGraph();
 
-  // new hard codede MemRef object.
+  // new hard coded MemRef object.
   float aligned[] = {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0,
                      0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   intptr_t sizes[2] = {6, 6};
@@ -47,15 +40,8 @@ TEST_F(GraphContainerTest, adjListDirectedUnweighted) {
   graph.addEdge(4, 2);
   graph.addEdge(5, 1);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -77,15 +63,8 @@ TEST_F(GraphContainerTest, adjListUndirectedWeighted) {
   graph.addEdge(4, 2, 5);
   graph.addEdge(5, 1, 6);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 2, 0, 0, 0, 0, 2, 0, 0, 3, 4, 6, 0, 0, 0, 0, 5, 0,
@@ -107,15 +86,8 @@ TEST_F(GraphContainerTest, adjListDirectedWeighted) {
   graph.addEdge(4, 2, 5);
   graph.addEdge(5, 1, 6);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   int aligned[] = {0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -138,17 +110,10 @@ TEST_F(GraphContainerTest, adjMatrixUndirectedUnweighted) {
   graph.addEdge(1, 4);
   graph.addEdge(2, 4);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
   // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linera 2D form: " << std::endl;
-  graph.printGraph();
 
-  // new hard codede MemRef object.
+  // new hard coded MemRef object.
   float aligned[] = {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0,
                      0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   intptr_t sizes[2] = {6, 6};
@@ -168,15 +133,8 @@ TEST_F(GraphContainerTest, adjMatrixDirectedUnweighted) {
   graph.addEdge(4, 2);
   graph.addEdge(5, 1);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -198,15 +156,8 @@ TEST_F(GraphContainerTest, adjMatrixUndirectedWeighted) {
   graph.addEdge(4, 2, 5);
   graph.addEdge(5, 1, 6);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 2, 0, 0, 0, 0, 2, 0, 0, 3, 4, 6, 0, 0, 0, 0, 5, 0,
@@ -228,15 +179,8 @@ TEST_F(GraphContainerTest, adjMatrixDirectedWeighted) {
   graph.addEdge(4, 2, 5);
   graph.addEdge(5, 1, 6);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -259,17 +203,10 @@ TEST_F(GraphContainerTest, incMatrixUndirectedUnweighted) {
   graph.addEdge(1, 4);
   graph.addEdge(2, 4);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linera 2D form: " << std::endl;
-  graph.printGraph();
 
-  // new hard codede MemRef object.
+  // new hard coded MemRef object.
   float aligned[] = {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0,
                      0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   intptr_t sizes[2] = {6, 6};
@@ -289,15 +226,8 @@ TEST_F(GraphContainerTest, incMatrixDirectedUnweighted) {
   graph.addEdge(4, 2);
   graph.addEdge(5, 1);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -319,15 +249,8 @@ TEST_F(GraphContainerTest, incMatrixUndirectedWeighted) {
   graph.addEdge(4, 2, 5);
   graph.addEdge(5, 1, 6);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   float aligned[] = {0, 2, 0, 0, 0, 0, 2, 0, 0, 3, 4, 6, 0, 0, 0, 0, 5, 0,
@@ -349,15 +272,8 @@ TEST_F(GraphContainerTest, incMatrixDirectedWeighted) {
   graph.addEdge(4, 2, 5);
   graph.addEdge(5, 1, 6);
 
-  // Print the original grpah according to the representaion.
-  std::cout << "Original Grpah: " << std::endl;
-  graph.printGraphOg();
-
-  // convert the graph to MemRef using the functions in GraphContainer.cpp and
-  // print the memref
+  // convert the graph to MemRef using the functions in GraphContainer.cpp
   auto memref2 = graph.get_Memref();
-  std::cout << "Graph in linear 2D form: " << std::endl;
-  graph.printGraph();
 
   // new hard coded MemRef object.
   int aligned[] = {0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

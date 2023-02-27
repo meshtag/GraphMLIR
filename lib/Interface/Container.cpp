@@ -179,8 +179,16 @@ template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(MemRef<T, N> &&other) noexcept {
   // Free the original aligned and allocated space.
   delete[] allocated;
-  // Copy members of the original object.
-  MemRef<T, N>::MemRef(other);
+  // Steal members of the original object.
+  std::swap(strides, other.strides);
+  std::swap(offset, other.offset);
+  std::swap(sizes, other.sizes);
+  std::swap(size, other.size);
+  std::swap(allocated, other.allocated);
+  std::swap(aligned, other.aligned);
+  // Assign the NULL pointer to the original aligned and allocated members to
+  // avoid the double free error.
+  other.allocated = other.aligned = nullptr;
   return *this;
 }
 
@@ -299,8 +307,8 @@ bool MemRef<T, N>::operator==(const MemRef<T, N> &other) {
 
   for (intptr_t i = 0; i < x1; i++) {
     for (intptr_t j = 0; j < y1; j++) {
-      if(this->aligned[i * x1 + y1] != other.aligned[i * x1 + y1]) {
-      	return false;
+      if (this->aligned[i * x1 + y1] != other.aligned[i * x1 + y1]) {
+        return false;
       }
     }
   }

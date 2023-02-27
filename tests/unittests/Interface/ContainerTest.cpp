@@ -52,15 +52,14 @@ TEST_F(MemRefTest, MoveConstructor2DMemref) {
   float aligned[] = {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0,
                      0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   intptr_t sizes[2] = {6, 6};
-  MemRef<float, 2> m(aligned, sizes, 0);
+  MemRef<float, 2> m1(aligned, sizes, 0);
+  MemRef<float, 2> m2(aligned, sizes, 0);
 
-  // create a copy of the the hardcoded MemRef and compare it with the stolen
-  // memref
-  MemRef<float, 2> m_copy = m;
-  MemRef<float, 2> move = std::move(m);
+  // Construct using move constructor.
+  MemRef<float, 2> move = std::move(m1);
 
   // test
-  EXPECT_EQ(m_copy == move, true);
+  EXPECT_EQ(m2 == move, true);
 }
 
 // Move assignment operator.
@@ -69,12 +68,13 @@ TEST_F(MemRefTest, MoveAssignment2DMemref) {
   float aligned[] = {0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0,
                      0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   intptr_t sizes[2] = {6, 6};
-  MemRef<float, 2> m(aligned, sizes, 0);
+  MemRef<float, 2> m1(aligned, sizes, 0);
+  MemRef<float, 2> m2(aligned, sizes, 0);
 
-  // create a copy of the hardcoded MemRef and compare it with the stolen MemRef
-  MemRef<float, 2> m_copy = m;
-  MemRef<float, 2> move = std::move(m);
+  MemRef<float, 2> move;
+  // Assignment using the move assignment operator.
+  move = std::move(m1);
 
   // test
-  EXPECT_EQ(m_copy == move, true);
+  EXPECT_EQ(m2 == move, true);
 }
