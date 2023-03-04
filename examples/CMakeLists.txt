@@ -11,8 +11,6 @@ BFS
 PROPERTIES
 LINKER_LANGUAGE C)
 
-
-
 add_executable(bfsExample bfsExample.cpp)
 add_dependencies(bfsExample graph-opt)
 target_link_libraries(bfsExample BFS)

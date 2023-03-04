@@ -209,7 +209,7 @@ void Graph<T, N>::addEdge(T Node1, T Node2, T EdgeWeight) {
     this->incMat[Node2][edgeCount] = EdgeWeight;
     break;
   case graph::detail::GRAPH_INC_MATRIX_DIRECTED_WEIGHTED:
-    EdgeWeight = std::abs(sqrt(EdgeWeight));
+    EdgeWeight = EdgeWeight;
     this->incMat[Node1][edgeCount] = EdgeWeight;
     this->incMat[Node2][edgeCount] = -EdgeWeight;
     this->edgeCount += 1;
@@ -461,9 +461,9 @@ template <typename T, size_t N> void Graph<T, N>::graph_to_MemRef_descriptor() {
           for (k = flag + 1; k < this->incMat.size() && flag != -2; k++) {
             if ((this->incMat[k][j] != 0) && flag != -1) {
               if (this->incMat[k][j] < this->incMat[int(flag)][j])
-                linear[int(flag) * x + k] = pow(incMat[k][j], 2);
+                linear[int(flag) * x + k] = incMat[k][j];
               else
-                linear[k * x + int(flag)] = pow(incMat[k][j], 2);
+                linear[k * x + int(flag)] = incMat[k][j];
               flag = -1;
             }
           }

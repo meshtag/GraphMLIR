@@ -23,6 +23,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
+#include <cstdio>
 #include <memory>
 #include <numeric>
 #include <stdexcept>
@@ -177,8 +179,16 @@ template <typename T, std::size_t N>
 MemRef<T, N> &MemRef<T, N>::operator=(MemRef<T, N> &&other) noexcept {
   // Free the original aligned and allocated space.
   delete[] allocated;
-  // Copy members of the original object.
-  MemRef<T, N>::MemRef(other);
+  // Steal members of the original object.
+  std::swap(strides, other.strides);
+  std::swap(offset, other.offset);
+  std::swap(sizes, other.sizes);
+  std::swap(size, other.size);
+  std::swap(allocated, other.allocated);
+  std::swap(aligned, other.aligned);
+  // Assign the NULL pointer to the original aligned and allocated members to
+  // avoid the double free error.
+  other.allocated = other.aligned = nullptr;
   return *this;
 }
 
@@ -275,6 +285,35 @@ template <typename T, size_t N> T *MemRef<T, N>::release() {
   aligned = nullptr;
   allocated = nullptr;
   return temp;
+}
+
+template <typename T, size_t N>
+bool MemRef<T, N>::operator==(const MemRef<T, N> &other) {
+  intptr_t x1 = this->sizes[0];
+  intptr_t y1 = this->sizes[1];
+  intptr_t x2 = other.sizes[0];
+  intptr_t y2 = other.sizes[1];
+
+  // compare the sizes array and size
+  if (x1 != x2 || y1 != y2 || this->size != other.size) {
+    return false;
+  }
+
+  // compare the strides
+  if (this->strides[0] != this->strides[0] ||
+      other.strides[1] != other.strides[1]) {
+    return false;
+  }
+
+  for (intptr_t i = 0; i < x1; i++) {
+    for (intptr_t j = 0; j < y1; j++) {
+      if (this->aligned[i * x1 + y1] != other.aligned[i * x1 + y1]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 #endif // CORE_CONTAINER_DEF
