@@ -1,0 +1,44 @@
+name: Build GraphMLIR
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GraphMLIR GitHub repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      # in order to use commit hash as cache key
+      - name: Get LLVM submodule commit hash
+        run: |
+          LLVM_COMMIT_HASH=$(git rev-parse HEAD:llvm)
+          echo "LLVM_COMMIT_HASH=$LLVM_COMMIT_HASH" >> $GITHUB_ENV
+
+      - name: Build CMake and Ninja
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build
+
+      # outputs cache-hit boolean
+      - name: Cache LLVM
+        uses: actions/cache@v3
+        id: restore-cache
+        with:
+          key: "llvm-${{ env.LLVM_COMMIT_HASH }}"
+          path: ${{ github.workspace }}/llvm/
+          # for partial match; output is false
+          restore-keys: llvm-
+
+      # conditional step, depends on output of Cache LLVM
+      - name: Build LLVM
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: ./.github/scripts/build-llvm.sh
+        shell: bash
+
+      - name: Build project
+        run: ./.github/scripts/build-project.sh
+        shell: bash
