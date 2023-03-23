@@ -54,28 +54,31 @@ public:
     auto loc = op->getLoc();
     auto ctx = op->getContext();
 
-    // Registering operand types
+    // Register operands
     Value graph = op->getOperand(0);
     Value parent = op->getOperand(1);
     Value distance = op->getOperand(2);
 
-    Value idx0 = rewriter.create<ConstantIndexOp>(loc, 0);
-    Value idx1 = rewriter.create<ConstantIndexOp>(loc, 1);
-    Value V = rewriter.create<memref::DimOp>(loc, graph, idx0);
-
+    // Types
     IndexType idxt = IndexType::get(ctx);
     IntegerType it32 = IntegerType::get(ctx, 32);
     VectorType vt32 = VectorType::get({1000}, it32);
+    VectorType qt = VectorType::get({1000}, idxt);
 
-    Value minusOne = rewriter.create<ConstantIntOp>(loc, int(-1), it32);
+    // Constants
+    Value idx0 = rewriter.create<ConstantIndexOp>(loc, 0);
+    Value idx1 = rewriter.create<ConstantIndexOp>(loc, 1);
+
+    Value V = rewriter.create<memref::DimOp>(loc, graph, idx0);
+
     Value zero = rewriter.create<ConstantIntOp>(loc, int(0), it32);
     Value one = rewriter.create<ConstantIntOp>(loc, int(1), it32);
+    Value minusOne = rewriter.create<ConstantIntOp>(loc, int(-1), it32);
 
-    // Queue implementation
-    VectorType qt = VectorType::get({1000}, idxt);
+    // Queue
     Value queue = rewriter.create<vector::BroadcastOp>(loc, qt, idx0);
     Value front = rewriter.create<ConstantIntOp>(loc, int(0), it32);
-    Value rear = rewriter.create<ConstantIntOp>(loc, int(0), it32);
+    Value rear = rewriter.create<ConstantIntOp>(loc, int(5), it32);
 
     // Visited array
     Value visited = rewriter.create<vector::BroadcastOp>(loc, vt32, zero);
@@ -83,16 +86,13 @@ public:
     queue = rewriter.create<vector::InsertElementOp>(loc, idx0, queue, rear);
     rear = rewriter.create<AddIOp>(loc, rear, one);
 
+    // While loop
     SmallVector<Value> operands = {queue, front, rear, visited};
     SmallVector<Type> types = {qt, it32, it32, vt32};
     SmallVector<Location> locations = {loc, loc, loc, loc};
 
-    SmallVector<Value> lbs = {idx0};
-    SmallVector<Value> ubs = {V};
-    SmallVector<int64_t> steps = {1};
-
-    // While loop
     auto whileOp = rewriter.create<scf::WhileOp>(loc, types, operands);
+
     Block *before =
         rewriter.createBlock(&whileOp.getBefore(), {}, types, locations);
     Block *after =
@@ -101,36 +101,44 @@ public:
     // Before block - Condition
     {
       rewriter.setInsertionPointToStart(&whileOp.getBefore().front());
+
       Value front = before->getArgument(1);
       Value rear = before->getArgument(2);
 
-      Value queueNotEmpty =
+      Value notEmpty =
           rewriter.create<CmpIOp>(loc, CmpIPredicate::ne, front, rear);
-      rewriter.create<scf::ConditionOp>(loc, queueNotEmpty,
-                                        before->getArguments());
+
+      rewriter.create<scf::ConditionOp>(loc, notEmpty, before->getArguments());
     }
-    // After block
+
     {
       rewriter.setInsertionPointToStart(&whileOp.getAfter().front());
+
       Value queue = after->getArgument(0);
       Value front = after->getArgument(1);
       Value rear = after->getArgument(2);
       Value visited = after->getArgument(3);
 
-      // Code logic here
       Value u = rewriter.create<vector::ExtractElementOp>(loc, queue, front);
       front = rewriter.create<AddIOp>(loc, front, one);
 
-      buildAffineLoopNest(
-          rewriter, loc, lbs, ubs, steps,
-          [&](OpBuilder &builder, Location loc, ValueRange ivr) {
-            Value edge = builder.create<memref::LoadOp>(loc, graph,
-                                                        ValueRange{u, ivr[0]});
-            Value visited =
-                builder.create<vector::ExtractElementOp>(loc, visited, ivr[0]);
+      auto loop = rewriter.create<scf::ForOp>(
+          loc, idx0, V, idx1, ValueRange{queue, front, rear, visited},
+          [&](OpBuilder &builder, Location loc, Value v, ValueRange args) {
+            Value queue = args[0];
+            Value front = args[1];
+            Value rear = args[2];
+            Value visited = args[3];
+
+            front = rewriter.create<AddIOp>(loc, front, one);
+
+            rewriter.create<scf::YieldOp>(
+                loc, ValueRange({queue, front, rear, visited}));
           });
 
-      // Termination step for after block
+      // front = loop.getBody()->getArgument(2);
+      // rewriter.create<memref::StoreOp>(loc, front, distance, idx1);
+
       rewriter.create<scf::YieldOp>(loc,
                                     ValueRange({queue, front, rear, visited}));
     }
