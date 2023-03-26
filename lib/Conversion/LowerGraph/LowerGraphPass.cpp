@@ -74,17 +74,19 @@ public:
     Value zero = rewriter.create<ConstantIntOp>(loc, int(0), it32);
     Value one = rewriter.create<ConstantIntOp>(loc, int(1), it32);
     Value minusOne = rewriter.create<ConstantIntOp>(loc, int(-1), it32);
-
+    Value five = rewriter.create<ConstantIntOp>(loc, int(5), it32);
     // Queue
     Value queue = rewriter.create<vector::BroadcastOp>(loc, qt, idx0);
     Value front = rewriter.create<ConstantIntOp>(loc, int(0), it32);
-    Value rear = rewriter.create<ConstantIntOp>(loc, int(5), it32);
+    Value rear = rewriter.create<ConstantIntOp>(loc, int(1), it32);
 
     // Visited array
     Value visited = rewriter.create<vector::BroadcastOp>(loc, vt32, zero);
 
     queue = rewriter.create<vector::InsertElementOp>(loc, idx0, queue, rear);
     rear = rewriter.create<AddIOp>(loc, rear, one);
+
+    visited = rewriter.create<vector::InsertElementOp>(loc, one, visited, idx0);
 
     // While loop
     SmallVector<Value> operands = {queue, front, rear, visited};
@@ -130,17 +132,57 @@ public:
             Value rear = args[2];
             Value visited = args[3];
 
-            front = rewriter.create<AddIOp>(loc, front, one);
+            Value edge =
+                builder.create<memref::LoadOp>(loc, graph, ValueRange{u, v});
+            Value vis =
+                builder.create<vector::ExtractElementOp>(loc, visited, v);
 
-            rewriter.create<scf::YieldOp>(
-                loc, ValueRange({queue, front, rear, visited}));
+            Value present =
+                builder.create<CmpIOp>(loc, CmpIPredicate::ne, edge, zero);
+            Value nvisited =
+                builder.create<CmpIOp>(loc, CmpIPredicate::eq, vis, zero);
+
+            Value condition = builder.create<AndIOp>(loc, present, nvisited);
+
+            scf::IfOp ifop = builder.create<scf::IfOp>(
+                loc, TypeRange{qt, it32, it32, vt32}, condition, true);
+            // Then block
+            {
+              builder.setInsertionPointToStart(ifop.thenBlock());
+
+              // Logic
+              Value dist = builder.create<memref::LoadOp>(loc, distance, u);
+              Value p = builder.create<IndexCastOp>(loc, it32, u);
+              dist = builder.create<AddIOp>(loc, dist, edge);
+
+              builder.create<memref::StoreOp>(loc, dist, distance, v);
+              builder.create<memref::StoreOp>(loc, p, parent, v);
+
+              Value nvisited =
+                  builder.create<vector::InsertElementOp>(loc, one, visited, v);
+              Value nqueue =
+                  builder.create<vector::InsertElementOp>(loc, v, queue, rear);
+              Value nrear = builder.create<AddIOp>(loc, rear, one);
+
+              builder.create<scf::YieldOp>(
+                  loc, ValueRange{nqueue, front, nrear, nvisited});
+            }
+            // Else block
+            {
+              builder.setInsertionPointToStart(ifop.elseBlock());
+              builder.create<scf::YieldOp>(
+                  loc, ValueRange{queue, front, rear, visited});
+            }
+
+            builder.setInsertionPointAfter(ifop);
+            ValueRange results = ifop.getResults();
+
+            builder.create<scf::YieldOp>(loc, results);
           });
 
-      // front = loop.getBody()->getArgument(2);
-      // rewriter.create<memref::StoreOp>(loc, front, distance, idx1);
+      ValueRange lresults = loop.getResults();
 
-      rewriter.create<scf::YieldOp>(loc,
-                                    ValueRange({queue, front, rear, visited}));
+      rewriter.create<scf::YieldOp>(loc, lresults);
     }
 
     rewriter.eraseOp(op);

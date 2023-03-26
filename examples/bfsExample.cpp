@@ -18,11 +18,10 @@ int main() {
   Graph<int, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
                              5);
 
-  sample_graph.addEdge(0, 2, 1);
+  sample_graph.addEdge(0, 1, 1);
+  sample_graph.addEdge(1, 2, 3);
   sample_graph.addEdge(2, 3, 3);
-  sample_graph.addEdge(3, 2, 3);
-  sample_graph.addEdge(2, 2, 6);
-  sample_graph.addEdge(1, 2, 2);
+  sample_graph.addEdge(3, 4, 6);
 
   // this will print the original graph.
   std::cout << "Printing graph in format it was entered ( "
@@ -43,6 +42,18 @@ int main() {
   sample_graph.printGraph();
 
   graph::graph_bfs(&graph, &parent, &distance);
+
+  std::cout << "Distance\n";
+  for (int i = 0; i < 5; i++) {
+    std::cout << distance[i] << " ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "\nParent\n";
+  for (int i = 0; i < 5; i++) {
+    std::cout << parent[i] << " ";
+  }
+  std::cout << std::endl;
 
   graph.release();
   parent.release();
