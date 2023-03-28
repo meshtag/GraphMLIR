@@ -4,6 +4,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include "mlir/IR/AsmState.h"
 #include "mlir/IR/Dialect.h"
 #include "mlir/IR/MLIRContext.h"
 #include "mlir/InitAllDialects.h"
@@ -20,21 +21,33 @@
 #include "Graph/GraphDialect.h"
 #include "Graph/GraphOps.h"
 
+// using namespace llvm;
+// using namespace mlir;
+
 namespace mlir {
 namespace graph {
 void registerLowerGraphPass();
 } // namespace graph
+namespace test {
+  void registerTestVectorLowerings();
+}
 } // namespace mlir
+
+namespace test {
+void registerTestDialect(mlir::DialectRegistry &);
+void registerTestTransformDialectExtension(mlir::DialectRegistry &);
+} 
 
 int main(int argc, char **argv) {
   // Register all MLIR passes.
   mlir::registerAllPasses();
-
   mlir::graph::registerLowerGraphPass();
-
+  mlir::test::registerTestVectorLowerings();
   mlir::DialectRegistry registry;
   // Register all MLIR core dialects.
   registerAllDialects(registry);
+  ::test::registerTestDialect(registry);
+  ::test::registerTestTransformDialectExtension(registry);
   // Register dialects in graph-mlir project.
   // clang-format off
   registry.insert<graph::GraphDialect>();

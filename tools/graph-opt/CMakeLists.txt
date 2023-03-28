@@ -10,6 +10,8 @@ target_link_libraries(graph-opt
   ${dialect_libs}
   ${conversion_libs}
   MLIROptLib
-  
+  MLIRTestTransformDialect
+  MLIRVectorTestPasses
+  MLIRTestDialect
   LowerGraphPass
   )

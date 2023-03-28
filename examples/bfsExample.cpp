@@ -1,4 +1,4 @@
-//====- bfs.cpp - Example of graph-opt tool ========================//
+//====- bfs.cpp - Example of graph-opt tool ==================================//
 //
 // The graph.bfs operation will be compiled into an object file with the
 // graph-opt tool.

@@ -1,5 +1,4 @@
-//===- graph.h
-//--------------------------------------------------------------===//
+//===- graph.h -------------------------------------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,11 +48,20 @@ extern "C" {
 void _mlir_ciface_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
                       MemRef<float, 2> graph3);
 }
+
+extern "C" {
+void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1, MemRef<float, 2> *graph2);
+}
+
 } // namespace detail
 
-void graph_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
+void inline bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
                MemRef<float, 2> graph3) {
   detail::_mlir_ciface_bfs(graph1, graph2, graph3);
+}
+
+void inline floyd_warshall(MemRef<float, 2> *input, MemRef<float, 2> *output) {
+  detail::_mlir_ciface_floyd_warshall(input, output);
 }
 } // namespace graph
 
