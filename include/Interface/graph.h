@@ -1,4 +1,5 @@
-//===- graph.h -------------------------------------------------------------===//
+//===- graph.h
+//-------------------------------------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,19 +46,20 @@ enum graph_type {
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
-                      MemRef<float, 2> graph3);
+void _mlir_ciface_bfs(MemRef<int, 2> *graph, MemRef<int, 1> *parent,
+                      MemRef<int, 1> *distance);
 }
 
 extern "C" {
-void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1, MemRef<float, 2> *graph2);
+void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1,
+                                 MemRef<float, 2> *graph2);
 }
 
 } // namespace detail
 
-void inline bfs(MemRef<float, 2> graph1, MemRef<float, 2> graph2,
-               MemRef<float, 2> graph3) {
-  detail::_mlir_ciface_bfs(graph1, graph2, graph3);
+void inline graph_bfs(MemRef<int, 2> *graph, MemRef<int, 1> *parent,
+                      MemRef<int, 1> *distance) {
+  detail::_mlir_ciface_bfs(graph, parent, distance);
 }
 
 void inline floyd_warshall(MemRef<float, 2> *input, MemRef<float, 2> *output) {
