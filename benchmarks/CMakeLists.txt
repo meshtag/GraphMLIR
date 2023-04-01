@@ -40,7 +40,7 @@ add_executable(graph-processing-benchmark
   GraphMlirFloydWarshallBenchmark.cpp
   LemonBFS.cpp
   Main.cpp
-
+  GraphMlirBfs.cpp
 )
 
 

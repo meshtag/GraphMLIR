@@ -30,6 +30,7 @@ using namespace std;
 
 namespace graph {
 void generateRandomGraph(Graph<float, 2> *graph, int vertices, int maxWeight = 900, int randomUpperLimit = 100, int randomLowerLimit = 2);
+void generateRandomGraph(Graph<int, 2> *graph, int vertices, int maxWeight = 900, int randomUpperLimit = 100, int randomLowerLimit = 2);
 void generateRandomGraph(vector<int> &edge, vector<int> &weight, int vertices, int maxWeight = 900, int randomUpperLimit = 100, int randomLowerLimit = 2);
 }
 #include <Utility/Utils.cpp>
