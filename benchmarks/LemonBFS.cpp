@@ -19,6 +19,7 @@
 //===----------------------------------------------------------------------===//
 
 #include <benchmark/benchmark.h>
+#include <bits/stdc++.h>
 #include <lemon/bfs.h>
 #include <lemon/list_graph.h>
 
@@ -31,17 +32,25 @@ ListDigraph::Node source = g.addNode();
 } // namespace
 
 void initializeLemonBFS() {
-  ListDigraph::Node source = g.addNode();
-  ListDigraph::Node y = g.addNode();
-  ListDigraph::Node z = g.addNode();
-  ListDigraph::Node w = g.addNode();
+  ListDigraph::Node nodes[100];
 
-  g.addArc(source, y);
-  g.addArc(y, z);
-  g.addArc(z, w);
-  g.addArc(w, source);
-  g.addArc(source, z);
-  g.addArc(y, w);
+  for (int i = 0; i < 100; i++)
+    nodes[i] = g.addNode();
+
+  source = nodes[0];
+
+  int vertices = 100;
+  int NUM = vertices;
+  int MAX_EDGES = vertices * (vertices - 1) / 2;
+  int NUMEDGE = MAX_EDGES;
+
+  for (int i = 1; i <= vertices; i++) {
+    ListDigraph::Node a = nodes[rand() % NUM];
+    ListDigraph::Node b = nodes[rand() % NUM];
+
+    g.addArc(a, b);
+    g.addArc(b, a);
+  }
 
   Bfs<ListDigraph> bfs(g);
 }
