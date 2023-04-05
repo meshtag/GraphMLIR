@@ -27,18 +27,22 @@ include "mlir/Interfaces/SideEffectInterfaces.td"
 def Graph_BFSOp : Graph_Op<"bfs">
 {
   let summary = [{
-      Breadth First Search
+      Breadth First Search on graph represented by CSR
   }];
 
-  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "graphMemref",
-                           [MemRead]>:$memrefG,
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "weightMemref",
+                           [MemRead]>:$memrefW,
+                       Arg<AnyRankedOrUnrankedMemRef, "cnzMemref",
+                           [MemRead]>:$memrefCnz,
+                       Arg<AnyRankedOrUnrankedMemRef, "cidxMemref",
+                           [MemRead]>:$memrefCidx,
                        Arg<AnyRankedOrUnrankedMemRef, "parentMemref",
                            [MemRead]>:$memrefP,
                        Arg<AnyRankedOrUnrankedMemRef, "distanceMemref",
                            [MemRead]>:$memrefD);
 
   let assemblyFormat = [{
-    $memrefG `,` $memrefP `,` $memrefD attr-dict `:` type($memrefG) `,` type($memrefP) `,` type($memrefD) 
+    $memrefW `,` $memrefCnz `,` $memrefCidx `,` $memrefP `,` $memrefD attr-dict `:` type($memrefW) `,` type($memrefCnz) `,` type($memrefCidx) `,` type($memrefP) `,` type($memrefD) 
   }];
 }
 

@@ -46,7 +46,8 @@ enum graph_type {
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef<int, 2> *graph, MemRef<int, 1> *parent,
+void _mlir_ciface_bfs(MemRef<int, 1> *weights, MemRef<int, 1> *cnz,
+                      MemRef<int, 1> *cidx, MemRef<int, 1> *parent,
                       MemRef<int, 1> *distance);
 }
 
@@ -57,9 +58,10 @@ void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1,
 
 } // namespace detail
 
-void inline graph_bfs(MemRef<int, 2> *graph, MemRef<int, 1> *parent,
+void inline graph_bfs(MemRef<int, 1> *weights, MemRef<int, 1> *cnz,
+                      MemRef<int, 1> *cidx, MemRef<int, 1> *parent,
                       MemRef<int, 1> *distance) {
-  detail::_mlir_ciface_bfs(graph, parent, distance);
+  detail::_mlir_ciface_bfs(weights, cnz, cidx, parent, distance);
 }
 
 void inline floyd_warshall(MemRef<float, 2> *input, MemRef<float, 2> *output) {

@@ -26,20 +26,22 @@
 using namespace std;
 using namespace lemon;
 
+#define V 100
+
 namespace {
 ListDigraph g;
 ListDigraph::Node source = g.addNode();
 } // namespace
 
 void initializeLemonBFS() {
-  ListDigraph::Node nodes[100];
+  ListDigraph::Node nodes[V];
 
-  for (int i = 0; i < 100; i++)
+  for (int i = 0; i < V; i++)
     nodes[i] = g.addNode();
 
   source = nodes[0];
 
-  int vertices = 100;
+  int vertices = V;
   int NUM = vertices;
   int MAX_EDGES = vertices * (vertices - 1) / 2;
   int NUMEDGE = MAX_EDGES;
@@ -49,7 +51,6 @@ void initializeLemonBFS() {
     ListDigraph::Node b = nodes[rand() % NUM];
 
     g.addArc(a, b);
-    g.addArc(b, a);
   }
 
   Bfs<ListDigraph> bfs(g);

@@ -26,20 +26,56 @@
 
 using namespace std;
 
+#define V 100
+
 namespace {
-Graph<int, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
-                           100);
-intptr_t size[2], opsize[1];
-MemRef<int, 2> *input;
+int g[V][V];
+intptr_t opsize[1];
+std::vector<int> a, ia, ca;
+MemRef<int, 1> *weights, *cnz, *cidx;
 } // namespace
 
-void initializeGraphMLIRBfs() {
-  graph::generateRandomGraph(&sample_graph, 100);
+// Generate compressed sparse matrix
+void generateCSR(int graph[V][V], std::vector<int> &a, std::vector<int> &ia,
+                 std::vector<int> &ca) {
+  int count = 0;
+  ia.push_back(0);
 
-  input = &sample_graph.get_Memref();
+  for (int r = 0; r < V; r++) {
+    for (int c = 0; c < V; c++) {
+      if (graph[r][c] != 0) {
+        a.push_back(graph[r][c]);
+        ca.push_back(c);
+
+        count++;
+      }
+    }
+
+    ia.push_back(count);
+  }
+}
+
+void initializeGraphMLIRBfs() {
+  int MAX_EDGES = V * (V - 1) / 2;
+  int NUMEDGES = MAX_EDGES;
+
+  for (int i = 0; i < NUMEDGES; i++) {
+    int u = rand() % V;
+    int v = rand() % V;
+    int d = rand() % 100 + 1;
+
+    g[u][v] = d;
+  }
+
+  std::vector<int> a, ia, ca;
+
+  generateCSR(g, a, ia, ca);
 
   opsize[0] = 101;
 
+  weights = new MemRef<int, 1>(a);
+  cnz = new MemRef<int, 1>(ia);
+  cidx = new MemRef<int, 1>(ca);
   MemRef<int, 1> parent = MemRef<int, 1>(opsize);
   MemRef<int, 1> distance = MemRef<int, 1>(opsize);
 }
@@ -49,7 +85,7 @@ static void GraphMLIR_Bfs(benchmark::State &state) {
     MemRef<int, 1> parent = MemRef<int, 1>(opsize);
     MemRef<int, 1> distance = MemRef<int, 1>(opsize);
     for (int i = 0; i < state.range(0); ++i) {
-      graph::graph_bfs(input, &parent, &distance);
+      graph::graph_bfs(weights, cnz, cidx, &parent, &distance);
     }
   }
 }
@@ -58,19 +94,13 @@ BENCHMARK(GraphMLIR_Bfs)->Arg(1);
 
 void generateResultGraphMLIRBfs() {
   initializeGraphMLIRBfs();
+
   cout << "-------------------------------------------------------\n";
   cout << "[ GraphMLIR BFS Result Information ]\n";
+
   MemRef<int, 1> parent = MemRef<int, 1>(opsize);
   MemRef<int, 1> distance = MemRef<int, 1>(opsize);
-  graph::graph_bfs(input, &parent, &distance);
 
-  // auto y = generateResult.getData();
-
-  // for(int i=0; i<size[0]; i++){
-  //     for(int j=0; j<size[1]; j++){
-  //         std::cout<<y[i*size[0] + j]<<" ";
-  //     }
-  //     std::cout<<"\n";
-  // }
+  graph::graph_bfs(weights, cnz, cidx, &parent, &distance);
   cout << "BFS operation finished!\n";
 }

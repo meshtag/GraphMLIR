@@ -35,6 +35,24 @@ using namespace graph;
 using namespace vector;
 using namespace mlir::arith;
 
+// Cast index to i32
+Value indexToI32(OpBuilder &builder, Location loc, Value v) {
+  return builder.create<IndexCastOp>(loc, builder.getI32Type(), v);
+}
+
+// Cast i32 to index
+Value I32ToIndex(OpBuilder &builder, Location loc, Value v) {
+  return builder.create<IndexCastOp>(loc, builder.getIndexType(), v);
+}
+
+// Add to index
+Value addIndex(OpBuilder &builder, Location loc, Value u, Value d) {
+  Value ans = indexToI32(builder, loc, u);
+  ans = builder.create<AddIOp>(loc, ans, d);
+
+  return I32ToIndex(builder, loc, ans);
+}
+
 //===----------------------------------------------------------------------===//
 // Rewrite Pattern
 //===----------------------------------------------------------------------===//
@@ -54,39 +72,48 @@ public:
     auto loc = op->getLoc();
     auto ctx = op->getContext();
 
-    // Register operands
-    Value graph = op->getOperand(0);
-    Value parent = op->getOperand(1);
-    Value distance = op->getOperand(2);
+    Value weights = op->getOperand(0);
+    Value cnz = op->getOperand(1);
+    Value cidx = op->getOperand(2);
+    Value parent = op->getOperand(3);
+    Value distance = op->getOperand(4);
 
     // Types
     IndexType idxt = IndexType::get(ctx);
     IntegerType it32 = IntegerType::get(ctx, 32);
-    VectorType vt32 = VectorType::get({1000}, it32);
-    VectorType qt = VectorType::get({1000}, idxt);
+    VectorType vt32 = VectorType::get({10000}, it32);
+    VectorType qt = VectorType::get({10000}, idxt);
 
-    // Constants
     Value idx0 = rewriter.create<ConstantIndexOp>(loc, 0);
     Value idx1 = rewriter.create<ConstantIndexOp>(loc, 1);
-
-    Value V = rewriter.create<memref::DimOp>(loc, graph, idx0);
+    Value cnzsize = rewriter.create<memref::DimOp>(loc, cnz, idx0);
 
     Value zero = rewriter.create<ConstantIntOp>(loc, int(0), it32);
     Value one = rewriter.create<ConstantIntOp>(loc, int(1), it32);
+    Value two = rewriter.create<ConstantIntOp>(loc, int(2), it32);
     Value minusOne = rewriter.create<ConstantIntOp>(loc, int(-1), it32);
-    Value five = rewriter.create<ConstantIntOp>(loc, int(5), it32);
+
+    // Number of vertices as index
+    Value V = indexToI32(rewriter, loc, cnzsize);
+    V = rewriter.create<AddIOp>(loc, V, minusOne);
+    V = I32ToIndex(rewriter, loc, V);
+
     // Queue
     Value queue = rewriter.create<vector::BroadcastOp>(loc, qt, idx0);
     Value front = rewriter.create<ConstantIntOp>(loc, int(0), it32);
     Value rear = rewriter.create<ConstantIntOp>(loc, int(1), it32);
 
-    // Visited array
+    // Visited
+    // 0 = not discovered = white
+    // 1 = discovered but no explored = grey
+    // 2 = discovered and explored = black
     Value visited = rewriter.create<vector::BroadcastOp>(loc, vt32, zero);
 
     queue = rewriter.create<vector::InsertElementOp>(loc, idx0, queue, rear);
     rear = rewriter.create<AddIOp>(loc, rear, one);
-
     visited = rewriter.create<vector::InsertElementOp>(loc, one, visited, idx0);
+    rewriter.create<memref::StoreOp>(loc, zero, distance, idx0);
+    rewriter.create<memref::StoreOp>(loc, minusOne, parent, idx0);
 
     // While loop
     SmallVector<Value> operands = {queue, front, rear, visited};
@@ -122,41 +149,40 @@ public:
       Value visited = after->getArgument(3);
 
       Value u = rewriter.create<vector::ExtractElementOp>(loc, queue, front);
+      Value z = addIndex(rewriter, loc, u, one);
+
       front = rewriter.create<AddIOp>(loc, front, one);
+      visited = rewriter.create<vector::InsertElementOp>(loc, two, visited, u);
+
+      Value s = rewriter.create<memref::LoadOp>(loc, cnz, u);
+      Value e = rewriter.create<memref::LoadOp>(loc, cnz, z);
+      s = I32ToIndex(rewriter, loc, s);
+      e = I32ToIndex(rewriter, loc, e);
 
       auto loop = rewriter.create<scf::ForOp>(
-          loc, idx0, V, idx1, ValueRange{queue, front, rear, visited},
-          [&](OpBuilder &builder, Location loc, Value v, ValueRange args) {
-            Value queue = args[0];
-            Value front = args[1];
-            Value rear = args[2];
-            Value visited = args[3];
-
-            Value edge =
-                builder.create<memref::LoadOp>(loc, graph, ValueRange{u, v});
-            Value vis =
-                builder.create<vector::ExtractElementOp>(loc, visited, v);
-
-            Value present =
-                builder.create<CmpIOp>(loc, CmpIPredicate::ne, edge, zero);
-            Value nvisited =
-                builder.create<CmpIOp>(loc, CmpIPredicate::eq, vis, zero);
-
-            Value condition = builder.create<AndIOp>(loc, present, nvisited);
+          loc, s, e, idx1, ValueRange{queue, front, rear, visited},
+          [&](OpBuilder &builder, Location loc, Value i, ValueRange args) {
+            Value v = rewriter.create<memref::LoadOp>(loc, cidx, i);
+            v = I32ToIndex(builder, loc, v);
+            Value color =
+                rewriter.create<vector::ExtractElementOp>(loc, visited, v);
+            Value condition =
+                rewriter.create<CmpIOp>(loc, CmpIPredicate::eq, color, zero);
 
             scf::IfOp ifop = builder.create<scf::IfOp>(
                 loc, TypeRange{qt, it32, it32, vt32}, condition, true);
+
             // Then block
             {
               builder.setInsertionPointToStart(ifop.thenBlock());
 
-              // Logic
-              Value dist = builder.create<memref::LoadOp>(loc, distance, u);
-              Value p = builder.create<IndexCastOp>(loc, it32, u);
-              dist = builder.create<AddIOp>(loc, dist, edge);
+              Value d = rewriter.create<memref::LoadOp>(loc, distance, u);
+              Value e = rewriter.create<memref::LoadOp>(loc, weights, i);
+              Value f = rewriter.create<AddIOp>(loc, d, e);
+              Value p = rewriter.create<IndexCastOp>(loc, it32, u);
 
-              builder.create<memref::StoreOp>(loc, dist, distance, v);
-              builder.create<memref::StoreOp>(loc, p, parent, v);
+              rewriter.create<memref::StoreOp>(loc, f, distance, v);
+              rewriter.create<memref::StoreOp>(loc, p, parent, v);
 
               Value nvisited =
                   builder.create<vector::InsertElementOp>(loc, one, visited, v);
@@ -167,6 +193,7 @@ public:
               builder.create<scf::YieldOp>(
                   loc, ValueRange{nqueue, front, nrear, nvisited});
             }
+
             // Else block
             {
               builder.setInsertionPointToStart(ifop.elseBlock());
@@ -179,7 +206,6 @@ public:
 
             builder.create<scf::YieldOp>(loc, results);
           });
-
       ValueRange lresults = loop.getResults();
 
       rewriter.create<scf::YieldOp>(loc, lresults);
@@ -258,37 +284,11 @@ public:
               builder.create<CmpFOp>(loc, CmpFPredicate::OLT, temp, z);
 
           builder.create<scf::IfOp>(
-              loc, checkCond,
-              [&](OpBuilder &builder, Location loc) {
+              loc, checkCond, [&](OpBuilder &builder, Location loc) {
                 builder.create<memref::StoreOp>(loc, temp, output,
                                                 ValueRange{ivs[1], ivs[2]});
                 builder.create<scf::YieldOp>(loc);
-              }
-              // [&](OpBuilder &builder, Location loc){
-              //   builder.create<scf::YieldOp>(loc);
-              // }
-          );
-          // Value x = builder.create<memref::LoadOp>(loc, output,
-          // ValueRange{ivs[1], ivs[0]}); Value vecik =
-          // builder.create<vector::BroadcastOp>(loc, vectorTy32, x); Value
-          // vecij = builder.create<vector::LoadOp>(loc, vectorTy32, output,
-          // ValueRange{ivs[1], ivs[2]}); Value veckj =
-          // builder.create<vector::LoadOp>(loc, vectorTy32, output,
-          // ValueRange{ivs[0], ivs[2]}); Value vecikj =
-          // builder.create<vector::FMAOp>(loc, veckj, vecOne, vecik); Value y =
-          // builder.create<vector::InsertOp>(loc, vecij, temp,
-          // ArrayRef<int64_t>{0}); Value z =
-          // builder.create<vector::InsertOp>(loc, vecikj, y,
-          // ArrayRef<int64_t>{1}); Value res =
-          // builder.create<vector::MultiDimReductionOp>(loc, z, vecMx,
-          // ArrayRef<bool>{true,false}, vector::CombiningKind::MINF);
-          // // builder.create<vector::PrintOp>(loc, vecik);
-          // // builder.create<vector::PrintOp>(loc, vecij);
-          // // builder.create<vector::PrintOp>(loc, veckj);
-          // // builder.create<vector::PrintOp>(loc, vecikj);
-          // // builder.create<vector::PrintOp>(loc, res);
-          // builder.create<vector::StoreOp>(loc, res, output,
-          // ValueRange{ivs[1], ivs[2]});
+              });
         });
 
     rewriter.eraseOp(op);

@@ -13,51 +13,73 @@
 #include <iostream>
 #include <vector>
 
+#define V 100
+
+// Generate compressed sparse matrix
+void generateCSR(int graph[V][V], std::vector<int> &a, std::vector<int> &ia,
+                 std::vector<int> &ca) {
+  int count = 0;
+  ia.push_back(0);
+
+  for (int r = 0; r < V; r++) {
+    for (int c = 0; c < V; c++) {
+      if (graph[r][c] != 0) {
+        a.push_back(graph[r][c]);
+        ca.push_back(c);
+
+        count++;
+      }
+    }
+
+    ia.push_back(count);
+  }
+}
+
+// Print memref data
+void print(MemRef<int, 1> data) {
+  auto y = data.getData();
+
+  for (size_t i = 0; i < data.getSize(); i++)
+    std::cout << y[i] << " ";
+  std::cout << std::endl;
+}
+
 int main() {
-  // use for weighted graph
-  Graph<int, 2> sample_graph(graph::detail::GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
-                             5);
+  int graph[V][V];
+  intptr_t size[1] = {V};
 
-  sample_graph.addEdge(0, 1, 1);
-  sample_graph.addEdge(1, 2, 3);
-  sample_graph.addEdge(2, 3, 3);
-  sample_graph.addEdge(3, 4, 6);
+  int MAX_EDGES = V * (V - 1) / 2;
+  int NUMEDGES = MAX_EDGES;
 
-  // this will print the original graph.
-  std::cout << "Printing graph in format it was entered ( "
-               "GRAPH_ADJ_MARIX_DIRECTED_WEIGHTED )\n";
-  sample_graph.printGraphOg();
+  for (int i = 0; i < NUMEDGES; i++) {
+    int u = rand() % V;
+    int v = rand() % V;
+    int d = rand() % 100 + 1;
 
-  auto graph = sample_graph.get_Memref();
+    graph[u][v] = d;
+  }
 
-  // Distance and Parent vector
-  intptr_t size[1] = {5};
+  std::vector<int> a, ia, ca;
 
+  generateCSR(graph, a, ia, ca);
+
+  MemRef<int, 1> weights = MemRef<int, 1>(a);
+  MemRef<int, 1> cnz = MemRef<int, 1>(ia);
+  MemRef<int, 1> cidx = MemRef<int, 1>(ca);
   MemRef<int, 1> parent = MemRef<int, 1>(size);
   MemRef<int, 1> distance = MemRef<int, 1>(size);
 
-  // this will print the linear 2d matrix in 2d form.
-  std::cout
-      << "Printing graph in form of 2d matrix after conversion to memref\n";
-  sample_graph.printGraph();
+  graph::graph_bfs(&weights, &cnz, &cidx, &parent, &distance);
 
-  graph::graph_bfs(&graph, &parent, &distance);
+  auto y = parent.getData();
 
-  std::cout << "Distance\n";
-  for (int i = 0; i < 5; i++) {
-    std::cout << distance[i] << " ";
-  }
+  for (size_t i = 0; i < V; i++)
+    std::cout << y[i] << " ";
   std::cout << std::endl;
 
-  std::cout << "\nParent\n";
-  for (int i = 0; i < 5; i++) {
-    std::cout << parent[i] << " ";
-  }
+  y = distance.getData();
+
+  for (size_t i = 0; i < V; i++)
+    std::cout << y[i] << " ";
   std::cout << std::endl;
-
-  graph.release();
-  parent.release();
-  distance.release();
-
-  std::cout << "End of the program! \n";
 }
