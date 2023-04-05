@@ -81,8 +81,8 @@ public:
     // Types
     IndexType idxt = IndexType::get(ctx);
     IntegerType it32 = IntegerType::get(ctx, 32);
-    VectorType vt32 = VectorType::get({10000}, it32);
-    VectorType qt = VectorType::get({10000}, idxt);
+    VectorType vt32 = VectorType::get({100}, it32);
+    VectorType qt = VectorType::get({100}, idxt);
 
     Value idx0 = rewriter.create<ConstantIndexOp>(loc, 0);
     Value idx1 = rewriter.create<ConstantIndexOp>(loc, 1);
