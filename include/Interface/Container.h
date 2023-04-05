@@ -37,6 +37,8 @@ public:
   MemRef(const T *data, intptr_t sizes[N], intptr_t offset = 0);
   // Constructor from a unique_ptr, taking over.
   MemRef(std::unique_ptr<T> &uptr, intptr_t sizes[N], intptr_t offset = 0);
+  // Constructor from a 1D vector
+  MemRef(std::vector<T> data);
   // Copy constructor.
   MemRef(const MemRef<T, N> &other);
   // Copy assignment operator.

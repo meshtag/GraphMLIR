@@ -89,6 +89,20 @@ MemRef<T, N>::MemRef(std::unique_ptr<T> &uptr, intptr_t *sizes,
 }
 
 /**
+ * @bried MemRef Array Constructor. Construct a MemRef object from a vector.
+ * @tparam T represents the datatype to be used
+ */
+template <typename T, size_t N> MemRef<T, N>::MemRef(std::vector<T> data) {
+  this->sizes[0] = data.size();
+  setStrides();
+  size = product(sizes);
+  allocated = new T[size];
+  aligned = allocated;
+  for (size_t i = 0; i < size; i++)
+    aligned[i] = data[i];
+}
+
+/**
  * @brief Copy Constructor. This constructor is used to initialize a MemRef
  object with another MemRef object.
         - Copy `offset` and `size` directly.
