@@ -219,6 +219,89 @@ private:
   int64_t stride;
 };
 
+class GraphBellmanFordLowering : public OpRewritePattern<graph::BellmanFordOp> {
+public:
+  using OpRewritePattern<graph::BellmanFordOp>::OpRewritePattern;
+
+  explicit GraphBellmanFordLowering(MLIRContext *context, int64_t strideParam)
+      : OpRewritePattern(context) {
+    stride = strideParam;
+  }
+
+  LogicalResult matchAndRewrite(graph::BellmanFordOp op,
+                                PatternRewriter &rewriter) const override {
+    auto loc = op->getLoc();
+    auto ctx = op->getContext();
+
+    Value start = op->getOperand(0);
+    Value end = op->getOperand(1);
+    Value distance = op->getOperand(2);
+    Value output = op->getOperand(3);
+
+    // Types
+    IndexType idxt = IndexType::get(ctx);
+    IntegerType it32 = IntegerType::get(ctx, 32);
+    VectorType vt32 = VectorType::get({100}, it32);
+    VectorType qt = VectorType::get({100}, idxt);
+
+    Value idx0 = rewriter.create<ConstantIndexOp>(loc, 0);
+    Value idx1 = rewriter.create<ConstantIndexOp>(loc, 1);
+    Value V = rewriter.create<memref::DimOp>(loc, output, idx0);
+    Value E = rewriter.create<memref::DimOp>(loc, start, idx0);
+
+    Value zero = rewriter.create<ConstantIntOp>(loc, int(0), it32);
+    Value one = rewriter.create<ConstantIntOp>(loc, int(1), it32);
+    Value two = rewriter.create<ConstantIntOp>(loc, int(2), it32);
+    Value minusOne = rewriter.create<ConstantIntOp>(loc, int(-1), it32);
+    Value maxInt = rewriter.create<memref::LoadOp>(loc, output, idx0);
+
+    SmallVector<Value, 8> lowerBounds{idx1, idx0};
+    SmallVector<Value, 8> upperBounds{V, E};
+    SmallVector<int64_t, 8> steps{1, 1};
+
+    rewriter.create<memref::StoreOp>(loc, zero, output, idx0);
+
+    buildAffineLoopNest(
+        rewriter, loc, lowerBounds, upperBounds, steps,
+        [&](OpBuilder &builder, Location loc, ValueRange ivs) {
+          Value u =
+              rewriter.create<memref::LoadOp>(loc, start, ValueRange{ivs[1]});
+          Value v =
+              rewriter.create<memref::LoadOp>(loc, end, ValueRange{ivs[1]});
+          Value d = rewriter.create<memref::LoadOp>(loc, distance,
+                                                    ValueRange{ivs[1]});
+
+          Value uidx = I32ToIndex(builder, loc, u);
+          Value vidx = I32ToIndex(builder, loc, v);
+
+          Value id = rewriter.create<memref::LoadOp>(loc, output, uidx);
+          // distance[u] + d
+          Value fd = rewriter.create<AddIOp>(loc, id, d);
+          // distance[v]
+          Value vd = rewriter.create<memref::LoadOp>(loc, output, vidx);
+
+          Value condition1 =
+              rewriter.create<CmpIOp>(loc, CmpIPredicate::ne, id, maxInt);
+          Value condition2 =
+              rewriter.create<CmpIOp>(loc, CmpIPredicate::slt, fd, vd);
+          Value condition =
+              rewriter.create<AndIOp>(loc, condition1, condition2);
+
+          builder.create<scf::IfOp>(
+              loc, condition, [&](OpBuilder &builder, Location loc) {
+                builder.create<memref::StoreOp>(loc, fd, output, vidx);
+                builder.create<scf::YieldOp>(loc);
+              });
+        });
+
+    rewriter.eraseOp(op);
+    return success();
+  }
+
+private:
+  int64_t stride;
+};
+
 class GraphFloydWarshallLowering
     : public OpRewritePattern<graph::FloydWarshallOp> {
 public:
@@ -305,6 +388,7 @@ void populateLowerGraphConversionPatterns(RewritePatternSet &patterns,
                                           int64_t stride) {
   patterns.add<GraphBFSLowering>(patterns.getContext(), stride);
   patterns.add<GraphFloydWarshallLowering>(patterns.getContext(), stride);
+  patterns.add<GraphBellmanFordLowering>(patterns.getContext(), stride);
 }
 
 //===----------------------------------------------------------------------===//

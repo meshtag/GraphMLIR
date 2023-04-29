@@ -25,6 +25,10 @@ add_executable(bfsExample bfsExample.cpp)
 add_dependencies(bfsExample graph-opt)
 target_link_libraries(bfsExample GRAPH)
 
+add_executable(bellmanFordExample bellmanFordExample.cpp)
+add_dependencies(bellmanFordExample graph-opt)
+target_link_libraries(bellmanFordExample GRAPH)
+
 add_executable(floydWarshallExample floydWarshallExample.cpp)
 add_dependencies(floydWarshallExample graph-opt)
 target_link_libraries(floydWarshallExample GRAPH)

@@ -56,12 +56,23 @@ void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1,
                                  MemRef<float, 2> *graph2);
 }
 
+extern "C" {
+void _mlir_ciface_bellman_ford(MemRef<int, 1> *start, MemRef<int, 1> *end,
+                               MemRef<int, 1> *distance,
+                               MemRef<int, 1> *output);
+}
+
 } // namespace detail
 
 void inline graph_bfs(MemRef<int, 1> *weights, MemRef<int, 1> *cnz,
                       MemRef<int, 1> *cidx, MemRef<int, 1> *parent,
                       MemRef<int, 1> *distance) {
   detail::_mlir_ciface_bfs(weights, cnz, cidx, parent, distance);
+}
+
+void inline bellman_ford(MemRef<int, 1> *start, MemRef<int, 1> *end,
+                         MemRef<int, 1> *distance, MemRef<int, 1> *output) {
+  detail::_mlir_ciface_bellman_ford(start, end, distance, output);
 }
 
 void inline floyd_warshall(MemRef<float, 2> *input, MemRef<float, 2> *output) {

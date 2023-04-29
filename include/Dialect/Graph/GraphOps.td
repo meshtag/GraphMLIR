@@ -46,6 +46,26 @@ def Graph_BFSOp : Graph_Op<"bfs">
   }];
 }
 
+def Graph_BellmanFordOp : Graph_Op<"bellman_ford">
+{
+  let summary = [{
+      Bellman Ford algorithm
+  }];
+
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "startMemref",
+                           [MemRead]>:$memrefS,
+                       Arg<AnyRankedOrUnrankedMemRef, "endMemref",
+                           [MemRead]>:$memrefE,
+                       Arg<AnyRankedOrUnrankedMemRef, "distanceMemref",
+                           [MemRead]>:$memrefD,
+                       Arg<AnyRankedOrUnrankedMemRef, "outputMemref",
+                           [MemRead]>:$memrefO);
+  
+  let assemblyFormat = [{
+    $memrefS `,` $memrefE `,` $memrefD `,` $memrefO attr-dict `:` type($memrefS) `,` type($memrefE) `,` type($memrefD) `,` type($memrefO) 
+  }];
+}
+
 def Graph_FloydWarshallOp : Graph_Op<"FloydWarshall">
 {
   let summary = [{The Floyd Warshall Algorithm is for solving all pairs shortest path problems. 
