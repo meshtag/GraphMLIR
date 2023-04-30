@@ -46,8 +46,7 @@ cmake -G Ninja .. \
     -DLLVM_ENABLE_ASSERTIONS=ON \
     -DCMAKE_BUILD_TYPE=RELEASE \
     -DGraphMLIR_BENCHMARK=ON \
-    -DLEMON_DIR=/PATH/TO/LEMON/SOURCE/CODE \
-    -DGraphMLIR_EXAMPLES=ON
+    -DLEMON_DIR=/PATH/TO/LEMON/SOURCE/CODE
 ninja graph-processing-benchmark
 cd bin && ./graph-processing-benchmark
 ```
