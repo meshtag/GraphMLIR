@@ -35,6 +35,9 @@ using namespace graph;
 using namespace vector;
 using namespace mlir::arith;
 
+// Size for visited and queue vector
+#define MAXSIZE 1000
+
 // Cast index to i32
 Value indexToI32(OpBuilder &builder, Location loc, Value v) {
   return builder.create<IndexCastOp>(loc, builder.getI32Type(), v);
@@ -81,13 +84,13 @@ public:
     // Types
     IndexType idxt = IndexType::get(ctx);
     IntegerType it32 = IntegerType::get(ctx, 32);
-    VectorType vt32 = VectorType::get({100}, it32);
-    VectorType qt = VectorType::get({100}, idxt);
+    VectorType vt32 = VectorType::get({MAXSIZE}, it32);
+    VectorType qt = VectorType::get({MAXSIZE}, idxt);
 
+    // Constants
     Value idx0 = rewriter.create<ConstantIndexOp>(loc, 0);
     Value idx1 = rewriter.create<ConstantIndexOp>(loc, 1);
     Value cnzsize = rewriter.create<memref::DimOp>(loc, cnz, idx0);
-
     Value zero = rewriter.create<ConstantIntOp>(loc, int(0), it32);
     Value one = rewriter.create<ConstantIntOp>(loc, int(1), it32);
     Value two = rewriter.create<ConstantIntOp>(loc, int(2), it32);
@@ -101,14 +104,21 @@ public:
     // Queue
     Value queue = rewriter.create<vector::BroadcastOp>(loc, qt, idx0);
     Value front = rewriter.create<ConstantIntOp>(loc, int(0), it32);
-    Value rear = rewriter.create<ConstantIntOp>(loc, int(1), it32);
+    Value rear = rewriter.create<ConstantIntOp>(loc, int(0), it32);
 
     // Visited
-    // 0 = not discovered = white
-    // 1 = discovered but no explored = grey
-    // 2 = discovered and explored = black
+    // 0 = not discovered = white (not added to the queue)
+    // 1 = discovered but no explored = grey (added to the queue)
+    // 2 = discovered and explored = black (removed from the queue)
     Value visited = rewriter.create<vector::BroadcastOp>(loc, vt32, zero);
 
+    /*
+      queue[rear] = 0
+      rear++
+      visited[0] = 1
+      distance[0] = 0
+      parent[0] = -1
+    */
     queue = rewriter.create<vector::InsertElementOp>(loc, idx0, queue, rear);
     rear = rewriter.create<AddIOp>(loc, rear, one);
     visited = rewriter.create<vector::InsertElementOp>(loc, one, visited, idx0);
@@ -128,6 +138,7 @@ public:
         rewriter.createBlock(&whileOp.getAfter(), {}, types, locations);
 
     // Before block - Condition
+    // while(front != rear)
     {
       rewriter.setInsertionPointToStart(&whileOp.getBefore().front());
 
@@ -148,6 +159,12 @@ public:
       Value rear = after->getArgument(2);
       Value visited = after->getArgument(3);
 
+      /*
+        u = queue[front]
+        z = u + 1
+        front++
+        visited[u] = 2
+      */
       Value u = rewriter.create<vector::ExtractElementOp>(loc, queue, front);
       Value z = addIndex(rewriter, loc, u, one);
 
@@ -159,9 +176,20 @@ public:
       s = I32ToIndex(rewriter, loc, s);
       e = I32ToIndex(rewriter, loc, e);
 
+      // for(i = s; i < e; i++)
       auto loop = rewriter.create<scf::ForOp>(
           loc, s, e, idx1, ValueRange{queue, front, rear, visited},
           [&](OpBuilder &builder, Location loc, Value i, ValueRange args) {
+            Value queue = args[0];
+            Value front = args[1];
+            Value rear = args[2];
+            Value visited = args[3];
+
+            /*
+              v = cidx[i]
+              color = visited[v]
+              condition = (color == 0)
+            */
             Value v = rewriter.create<memref::LoadOp>(loc, cidx, i);
             v = I32ToIndex(builder, loc, v);
             Value color =
@@ -175,15 +203,29 @@ public:
             // Then block
             {
               builder.setInsertionPointToStart(ifop.thenBlock());
-
+              /*
+                d = distance[u]
+                e = weights[i]
+                f = d + e
+                p = u
+              */
               Value d = rewriter.create<memref::LoadOp>(loc, distance, u);
               Value e = rewriter.create<memref::LoadOp>(loc, weights, i);
               Value f = rewriter.create<AddIOp>(loc, d, e);
               Value p = rewriter.create<IndexCastOp>(loc, it32, u);
 
+              /*
+                distance[v] = f
+                parent[v] = u
+              */
               rewriter.create<memref::StoreOp>(loc, f, distance, v);
               rewriter.create<memref::StoreOp>(loc, p, parent, v);
 
+              /*
+                visited[v] = 1
+                queue[rear] = v
+                rear++
+              */
               Value nvisited =
                   builder.create<vector::InsertElementOp>(loc, one, visited, v);
               Value nqueue =
@@ -206,6 +248,7 @@ public:
 
             builder.create<scf::YieldOp>(loc, results);
           });
+
       ValueRange lresults = loop.getResults();
 
       rewriter.create<scf::YieldOp>(loc, lresults);

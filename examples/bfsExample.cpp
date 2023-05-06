@@ -13,11 +13,11 @@
 #include <iostream>
 #include <vector>
 
-#define V 100
+#define V 5
 
 // Generate compressed sparse matrix
-void generateCSR(int graph[V][V], std::vector<int> &a, std::vector<int> &ia,
-                 std::vector<int> &ca) {
+void generateCSR(std::vector<std::vector<int>> &graph, std::vector<int> &a,
+                 std::vector<int> &ia, std::vector<int> &ca) {
   int count = 0;
   ia.push_back(0);
 
@@ -35,18 +35,8 @@ void generateCSR(int graph[V][V], std::vector<int> &a, std::vector<int> &ia,
   }
 }
 
-// Print memref data
-void print(MemRef<int, 1> data) {
-  auto y = data.getData();
-
-  for (size_t i = 0; i < data.getSize(); i++)
-    std::cout << y[i] << " ";
-  std::cout << std::endl;
-}
-
 int main() {
-  int graph[V][V];
-  intptr_t size[1] = {V};
+  std::vector<std::vector<int>> graph(V, std::vector<int>(V, 0));
 
   int MAX_EDGES = V * (V - 1) / 2;
   int NUMEDGES = MAX_EDGES;
@@ -56,7 +46,8 @@ int main() {
     int v = rand() % V;
     int d = rand() % 100 + 1;
 
-    graph[u][v] = d;
+    if (graph[u][v] == 0)
+      graph[u][v] = d;
   }
 
   std::vector<int> a, ia, ca;
@@ -66,20 +57,24 @@ int main() {
   MemRef<int, 1> weights = MemRef<int, 1>(a);
   MemRef<int, 1> cnz = MemRef<int, 1>(ia);
   MemRef<int, 1> cidx = MemRef<int, 1>(ca);
-  MemRef<int, 1> parent = MemRef<int, 1>(size);
-  MemRef<int, 1> distance = MemRef<int, 1>(size);
+  MemRef<int, 1> parent = MemRef<int, 1>(std::vector<int>(V, -1));
+  MemRef<int, 1> distance = MemRef<int, 1>(std::vector<int>(V, INT32_MAX));
 
   graph::graph_bfs(&weights, &cnz, &cidx, &parent, &distance);
 
   auto y = parent.getData();
 
-  for (size_t i = 0; i < V; i++)
-    std::cout << y[i] << " ";
-  std::cout << std::endl;
+  // Print parents
+  for (size_t i = 0; i < V; i++) {
+    std::cout << "parent(" << i << ")"
+              << " = " << parent[i] << std::endl;
+  }
 
   y = distance.getData();
 
-  for (size_t i = 0; i < V; i++)
-    std::cout << y[i] << " ";
-  std::cout << std::endl;
+  // Print distance
+  for (size_t i = 0; i < V; i++) {
+    std::cout << "distance(" << i << ")"
+              << " = " << distance[i] << std::endl;
+  }
 }

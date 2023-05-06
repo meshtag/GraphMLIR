@@ -26,7 +26,7 @@
 
 using namespace std;
 
-#define V 100
+#define V 1000
 
 namespace {
 int g[V][V];
@@ -64,14 +64,15 @@ void initializeGraphMLIRBfs() {
     int v = rand() % V;
     int d = rand() % 100 + 1;
 
-    g[u][v] = d;
+    if (g[u][v] == 0)
+      g[u][v] = d;
   }
 
   std::vector<int> a, ia, ca;
 
   generateCSR(g, a, ia, ca);
 
-  opsize[0] = 101;
+  opsize[0] = V + 1;
 
   weights = new MemRef<int, 1>(a);
   cnz = new MemRef<int, 1>(ia);
@@ -98,9 +99,10 @@ void generateResultGraphMLIRBfs() {
   cout << "-------------------------------------------------------\n";
   cout << "[ GraphMLIR BFS Result Information ]\n";
 
-  MemRef<int, 1> parent = MemRef<int, 1>(opsize);
-  MemRef<int, 1> distance = MemRef<int, 1>(opsize);
+  MemRef<int, 1> parent(opsize);
+  MemRef<int, 1> distance(opsize);
 
   graph::graph_bfs(weights, cnz, cidx, &parent, &distance);
+
   cout << "BFS operation finished!\n";
 }

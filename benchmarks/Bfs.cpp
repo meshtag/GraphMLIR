@@ -3,7 +3,7 @@
 
 using namespace std;
 
-#define V 100
+#define V 1000
 
 namespace {
 int graph[V][V];
@@ -11,7 +11,7 @@ int parent[V];
 int dist[V];
 } // namespace
 
-void bfs(int graph[V][V], int parent[V], int dist[V]) {
+void bfs(int graph[V][V], int *parent, int *dist) {
   bool visited[V];
 
   for (int i = 0; i < V; i++)
@@ -40,13 +40,14 @@ void bfs(int graph[V][V], int parent[V], int dist[V]) {
 }
 
 void initializeBfs() {
-  for (int i = 0; i < (100 * 99) / 2; i++) {
-    int u = rand() % 100;
-    int v = rand() % 100;
+  int MAX_EDGES = V * (V - 1) / 2;
+
+  for (int i = 0; i < MAX_EDGES; i++) {
+    int u = rand() % V;
+    int v = rand() % V;
     int d = rand() % 100;
 
     graph[u][v] = d;
-    graph[v][u] = d;
   }
 }
 
@@ -67,12 +68,13 @@ void generateResultBfs() {
 
   bfs(graph, parent, dist);
 
-  for (int x : parent)
-    cout << x << " ";
+  for (int i = 0; i < V; i++)
+    cout << parent[i] << " ";
   cout << endl;
 
-  for (int x : dist)
-    cout << x << " ";
+  for (int i = 0; i < V; i++)
+    cout << dist[i] << " ";
   cout << endl;
+
   cout << "BFS operation finished!\n";
 }
