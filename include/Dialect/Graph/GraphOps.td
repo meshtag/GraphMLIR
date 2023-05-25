@@ -59,4 +59,26 @@ def Graph_FloydWarshallOp : Graph_Op<"FloydWarshall">
   }];
 }
 
+def Graph_MinSpanningTreeOp: Graph_Op<"MinSpanningTree">
+{
+  let summary = [{
+  Minimum spanning tree (MST) is a subset of the edges of the graph that includes all vertices of the graph, 
+  forming a tree such that it has the sum of edge weights is the minimum.
+  This implementation uses the Prim-Jarnik's algorithm for evaluating the MST.
+  }];
+
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "inputMemref", 
+                            [MemRead]>:$memrefI, 
+                      Arg<AnyRankedOrUnrankedMemRef, "outputMemref", 
+                            [MemRead]>:$memrefO,
+                      Arg<AnyRankedOrUnrankedMemRef, "visitedMemref",
+                            [MemRead]>:$memrefV,
+                      Arg<AnyRankedOrUnrankedMemRef, "costMemref",
+                            [MemRead]>:$memrefC);
+                            
+  let assemblyFormat = [{
+    $memrefI `,` $memrefO `,` $memrefV `,` $memrefC attr-dict `:` type($memrefI) `,` type($memrefO) `,` type($memrefV) `,` type($memrefC)
+  }];
+}
+
 #endif // Graph_GraphOPS_TD

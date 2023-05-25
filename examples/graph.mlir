@@ -11,3 +11,8 @@ func.func @floyd_warshall(%input : memref<?x?xf32>, %output : memref<?x?xf32>)
   return
 }
 
+func.func @min_spanning_tree(%input : memref<?x?xi32>, %output : memref<?xi32>, %visited : memref<?xi32>, %cost : memref<?xi32>)
+{
+  graph.MinSpanningTree %input, %output, %visited, %cost : memref<?x?xi32>, memref<?xi32>, memref<?xi32>, memref<?xi32>
+  return
+}

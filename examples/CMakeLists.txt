@@ -1,11 +1,10 @@
 add_custom_command(OUTPUT graph.o
 COMMAND ${GraphMLIR_BINARY_DIR}/graph-opt ${GraphMLIR_EXAMPLES_DIR}/graph.mlir 
-        -lower-graph -lower-affine -convert-scf-to-cf 
+        -lower-graph -lower-affine -convert-scf-to-cf
         -test-vector-multi-reduction-lowering-patterns 
         -convert-vector-to-llvm 
-        -convert-memref-to-llvm
-        -llvm-request-c-wrappers
-        -convert-func-to-llvm
+        -convert-memref-to-llvm 
+        -convert-func-to-llvm='emit-c-wrappers=1'
         -reconcile-unrealized-casts 
         | 
         ${LLVM_MLIR_BINARY_DIR}/mlir-translate --mlir-to-llvmir 
@@ -28,3 +27,7 @@ target_link_libraries(bfsExample GRAPH)
 add_executable(floydWarshallExample floydWarshallExample.cpp)
 add_dependencies(floydWarshallExample graph-opt)
 target_link_libraries(floydWarshallExample GRAPH)
+
+add_executable(minSpanningTreeExample minSpanningTreeExample.cpp)
+add_dependencies(minSpanningTreeExample graph-opt)
+target_link_libraries(minSpanningTreeExample GRAPH)
