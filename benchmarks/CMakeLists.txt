@@ -38,7 +38,9 @@ add_executable(graph-processing-benchmark
   FloydWarshall.cpp
   BoostFloydWarshall.cpp
   GraphMlirFloydWarshallBenchmark.cpp
+  GraphMlirBellmanFordBenchmark.cpp
   LemonBFS.cpp
+  LemonBellmanFord.cpp
   Main.cpp
   GraphMlirBfs.cpp
   Bfs.cpp

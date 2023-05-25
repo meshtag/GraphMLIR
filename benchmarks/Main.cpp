@@ -25,12 +25,16 @@ void initializeFloydWarshall();
 void initializeLemonBFS();
 void initializeBoostFLoydWarshall();
 void initializeGraphMLIRBfs();
+void initializeGraphMLIRBellmanFord();
+void initializeLemonBellmanFord();
 
 void generateResultGraphMLIRFloydWarshall();
 void generateResultFloydWarshall();
 void generateResultLemonBFS();
 void generateResultBoostFLoydWarshall();
 void generateResultGraphMLIRBfs();
+void generateResultGraphMLIRBellmanFord();
+void generateResultLemonBellmanFord();
 
 int main(int argc, char **argv) {
 
@@ -39,6 +43,8 @@ int main(int argc, char **argv) {
   initializeLemonBFS();
   initializeBoostFLoydWarshall();
   initializeGraphMLIRBfs();
+  initializeGraphMLIRBellmanFord();
+  initializeLemonBellmanFord();
 
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
@@ -48,6 +54,7 @@ int main(int argc, char **argv) {
   generateResultLemonBFS();
   generateResultBoostFLoydWarshall();
   generateResultGraphMLIRBfs();
-
+  generateResultGraphMLIRBellmanFord();
+  generateResultLemonBellmanFord();
   return 0;
 }
