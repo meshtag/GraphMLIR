@@ -27,18 +27,59 @@ include "mlir/Interfaces/SideEffectInterfaces.td"
 def Graph_BFSOp : Graph_Op<"bfs">
 {
   let summary = [{
-      abcde
+      Breadth First Search on graph represented by CSR
+  }];
+
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "weightMemref",
+                           [MemRead]>:$memrefW,
+                       Arg<AnyRankedOrUnrankedMemRef, "cnzMemref",
+                           [MemRead]>:$memrefCnz,
+                       Arg<AnyRankedOrUnrankedMemRef, "cidxMemref",
+                           [MemRead]>:$memrefCidx,
+                       Arg<AnyRankedOrUnrankedMemRef, "parentMemref",
+                           [MemRead]>:$memrefP,
+                       Arg<AnyRankedOrUnrankedMemRef, "distanceMemref",
+                           [MemRead]>:$memrefD);
+
+  let assemblyFormat = [{
+    $memrefW `,` $memrefCnz `,` $memrefCidx `,` $memrefP `,` $memrefD attr-dict `:` type($memrefW) `,` type($memrefCnz) `,` type($memrefCidx) `,` type($memrefP) `,` type($memrefD) 
+  }];
+}
+
+def Graph_BellmanFordOp : Graph_Op<"bellman_ford">
+{
+  let summary = [{
+      Bellman Ford algorithm
+  }];
+
+  let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "startMemref",
+                           [MemRead]>:$memrefS,
+                       Arg<AnyRankedOrUnrankedMemRef, "endMemref",
+                           [MemRead]>:$memrefE,
+                       Arg<AnyRankedOrUnrankedMemRef, "distanceMemref",
+                           [MemRead]>:$memrefD,
+                       Arg<AnyRankedOrUnrankedMemRef, "outputMemref",
+                           [MemRead]>:$memrefO);
+  
+  let assemblyFormat = [{
+    $memrefS `,` $memrefE `,` $memrefD `,` $memrefO attr-dict `:` type($memrefS) `,` type($memrefE) `,` type($memrefD) `,` type($memrefO) 
+  }];
+}
+
+def Graph_FloydWarshallOp : Graph_Op<"FloydWarshall">
+{
+  let summary = [{The Floyd Warshall Algorithm is for solving all pairs shortest path problems. 
+  The problem is to find the shortest distances between every pair of vertices in a given 
+  edge-weighted directed Graph. 
   }];
 
   let arguments = (ins Arg<AnyRankedOrUnrankedMemRef, "inputMemref",
                            [MemRead]>:$memrefI,
-                       Arg<AnyRankedOrUnrankedMemRef, "kernelMemref",
-                           [MemRead]>:$memrefK,
                        Arg<AnyRankedOrUnrankedMemRef, "outputMemref",
                            [MemRead]>:$memrefCO);
 
   let assemblyFormat = [{
-    $memrefI `,` $memrefK `,` $memrefCO attr-dict `:` type($memrefI) `,` type($memrefK) `,` type($memrefCO) 
+    $memrefI `,` $memrefCO attr-dict `:` type($memrefI) `,` type($memrefCO) 
   }];
 }
 

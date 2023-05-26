@@ -1,5 +1,5 @@
 //===- graph.h
-//--------------------------------------------------------------===//
+//-------------------------------------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,22 +22,61 @@
 #ifndef INCLUDE_INTERFACE_GRAPH_H
 #define INCLUDE_INTERFACE_GRAPH_H
 
-#include <Interface/memref.h>
+#include <Interface/Container.h>
 
 namespace graph {
 namespace detail {
+
+enum graph_type {
+  GRAPH_ADJ_LIST_UNDIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_LIST_UNDIRECTED_WEIGHTED,
+  GRAPH_ADJ_LIST_DIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_LIST_DIRECTED_WEIGHTED,
+  GRAPH_ADJ_MATRIX_UNDIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_MATRIX_UNDIRECTED_WEIGHTED,
+  GRAPH_ADJ_MATRIX_DIRECTED_UNWEIGHTED,
+  GRAPH_ADJ_MATRIX_DIRECTED_WEIGHTED,
+  GRAPH_INC_MATRIX_UNDIRECTED_UNWEIGHTED,
+  GRAPH_INC_MATRIX_UNDIRECTED_WEIGHTED,
+  GRAPH_INC_MATRIX_DIRECTED_UNWEIGHTED,
+  GRAPH_INC_MATRIX_DIRECTED_WEIGHTED,
+};
+
 // Functions present inside graph::detail are not meant to be called by users
 // directly.
 // Declare the BFS C interface.
 extern "C" {
-void _mlir_ciface_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-                      MemRef_descriptor graph3);
+void _mlir_ciface_bfs(MemRef<int, 1> *weights, MemRef<int, 1> *cnz,
+                      MemRef<int, 1> *cidx, MemRef<int, 1> *parent,
+                      MemRef<int, 1> *distance);
 }
+
+extern "C" {
+void _mlir_ciface_floyd_warshall(MemRef<float, 2> *graph1,
+                                 MemRef<float, 2> *graph2);
+}
+
+extern "C" {
+void _mlir_ciface_bellman_ford(MemRef<int, 1> *start, MemRef<int, 1> *end,
+                               MemRef<int, 1> *distance,
+                               MemRef<int, 1> *output);
+}
+
 } // namespace detail
 
-void graph_bfs(MemRef_descriptor graph1, MemRef_descriptor graph2,
-               MemRef_descriptor graph3) {
-  detail::_mlir_ciface_bfs(graph1, graph2, graph3);
+void inline graph_bfs(MemRef<int, 1> *weights, MemRef<int, 1> *cnz,
+                      MemRef<int, 1> *cidx, MemRef<int, 1> *parent,
+                      MemRef<int, 1> *distance) {
+  detail::_mlir_ciface_bfs(weights, cnz, cidx, parent, distance);
+}
+
+void inline bellman_ford(MemRef<int, 1> *start, MemRef<int, 1> *end,
+                         MemRef<int, 1> *distance, MemRef<int, 1> *output) {
+  detail::_mlir_ciface_bellman_ford(start, end, distance, output);
+}
+
+void inline floyd_warshall(MemRef<float, 2> *input, MemRef<float, 2> *output) {
+  detail::_mlir_ciface_floyd_warshall(input, output);
 }
 } // namespace graph
 

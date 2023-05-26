@@ -7,23 +7,74 @@
 //
 //===----------------------------------------------------------------------===//
 
+#include <Interface/Container.h>
+#include <Interface/GraphContainer.h>
 #include <Interface/graph.h>
-#include <Interface/memref.h>
 #include <iostream>
+#include <vector>
+
+#define V 5
+
+// Generate compressed sparse matrix
+void generateCSR(std::vector<std::vector<int>> &graph, std::vector<int> &a,
+                 std::vector<int> &ia, std::vector<int> &ca) {
+  int count = 0;
+  ia.push_back(0);
+
+  for (int r = 0; r < V; r++) {
+    for (int c = 0; c < V; c++) {
+      if (graph[r][c] != 0) {
+        a.push_back(graph[r][c]);
+        ca.push_back(c);
+
+        count++;
+      }
+    }
+
+    ia.push_back(count);
+  }
+}
 
 int main() {
-  std::cout << "Reached here !!!\n";
+  std::vector<std::vector<int>> graph(V, std::vector<int>(V, 0));
 
-  float sample_graph1_array[9] = {1, 1, 1, 1, -8, 1, 1, 1, 1};
-  intptr_t sample_graph_length = 3;
-  intptr_t sample_graph_width = 3;
-  float *allocation_pointer = (float *)malloc(sizeof(float));
-  intptr_t sample_graph_sizes[2] = {sample_graph_width, sample_graph_length};
-  intptr_t sample_graph_strides[2] = {sample_graph_width, sample_graph_length};
+  int MAX_EDGES = V * (V - 1) / 2;
+  int NUMEDGES = MAX_EDGES;
 
-  MemRef_descriptor sample_graph =
-      MemRef_Descriptor(allocation_pointer, sample_graph1_array, 0,
-                        sample_graph_sizes, sample_graph_strides);
+  for (int i = 0; i < NUMEDGES; i++) {
+    int u = rand() % V;
+    int v = rand() % V;
+    int d = rand() % 100 + 1;
 
-  graph::graph_bfs(sample_graph, sample_graph, sample_graph);
+    if (graph[u][v] == 0)
+      graph[u][v] = d;
+  }
+
+  std::vector<int> a, ia, ca;
+
+  generateCSR(graph, a, ia, ca);
+
+  MemRef<int, 1> weights = MemRef<int, 1>(a);
+  MemRef<int, 1> cnz = MemRef<int, 1>(ia);
+  MemRef<int, 1> cidx = MemRef<int, 1>(ca);
+  MemRef<int, 1> parent = MemRef<int, 1>(std::vector<int>(V, -1));
+  MemRef<int, 1> distance = MemRef<int, 1>(std::vector<int>(V, INT32_MAX));
+
+  graph::graph_bfs(&weights, &cnz, &cidx, &parent, &distance);
+
+  auto y = parent.getData();
+
+  // Print parents
+  for (size_t i = 0; i < V; i++) {
+    std::cout << "parent(" << i << ")"
+              << " = " << parent[i] << std::endl;
+  }
+
+  y = distance.getData();
+
+  // Print distance
+  for (size_t i = 0; i < V; i++) {
+    std::cout << "distance(" << i << ")"
+              << " = " << distance[i] << std::endl;
+  }
 }
