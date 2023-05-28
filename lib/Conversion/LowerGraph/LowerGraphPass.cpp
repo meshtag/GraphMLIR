@@ -194,7 +194,7 @@ public:
     Value oneI = rewriter.create<arith::ConstantIntOp>(loc, int(1), i32);
     Value minusOneI = rewriter.create<arith::ConstantIntOp>(loc, int(-1), i32);
     Value minusTwoI = rewriter.create<arith::ConstantIntOp>(loc, int(-2), i32);
-    Value maxI = rewriter.create<arith::ConstantIntOp>(loc, int(1000), i32);
+    Value maxI = rewriter.create<arith::ConstantIntOp>(loc, int(1001), i32);
 
     /* loop bounds */
     Value V = rewriter.create<memref::DimOp>(loc, input, c0);
@@ -228,7 +228,7 @@ public:
 
             // if vertex is unvisited and cost is lesser than current minimum cost
             Value visitedCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::eq, visitedArg, zeroI);
-            Value costCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::ult, costArg, minCost);
+            Value costCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::slt, costArg, minCost);
             Value condition = builder.create<AndIOp>(loc, visitedCondition, costCondition);
 
             scf::IfOp ifOp = builder.create<scf::IfOp>(loc, TypeRange{i32, i32}, condition,
@@ -265,7 +265,7 @@ public:
 
             // if vertex is unvisited, edge between current vertex and minIndex vertex exists, and edge weight is lesser than current cost for that vertex
             Value visitedCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::eq, visitedArg, zeroI);
-            Value costCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::ult, weight, costArg);
+            Value costCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::slt, weight, costArg);
             Value existsCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::ne, weight, zeroI);
             Value condition = builder.create<AndIOp>(loc, existsCondition, builder.create<AndIOp>(loc, visitedCondition, costCondition));
             
