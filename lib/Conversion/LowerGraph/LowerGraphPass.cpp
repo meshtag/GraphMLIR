@@ -176,7 +176,6 @@ public:
                                 PatternRewriter &rewriter) const override {
     auto loc = op->getLoc();
     auto ctx = op->getContext();
-    // ImplicitLocOpBuilder rewriter(loc, rewriter);
     
     /* operands */
     Value input = op->getOperand(0);
@@ -187,8 +186,6 @@ public:
     /* types */
     IndexType idx = IndexType::get(ctx);
     IntegerType i32 = IntegerType::get(ctx, 32);
-    VectorType vi32 = VectorType::get({1000}, i32);
-    VectorType vidx = VectorType::get({1000}, idx);
 
     /* constants */
     Value c0 = rewriter.create<arith::ConstantIndexOp>(loc, 0);
