@@ -1,4 +1,4 @@
-//===- BoostFloyWarshall.cpp
+//===- BoostMinSpanningTree.cpp
 //-------------------------------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@
 #include <vector>
 #include <Utility/Utils.h>
 
-#define V 100
+#define V 10
 #define MAX_WEIGHT 1000
 
 using namespace std;

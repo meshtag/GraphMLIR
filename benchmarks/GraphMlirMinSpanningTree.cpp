@@ -1,4 +1,4 @@
-//===- GraphMlirFloydWarshallBenchmark.cpp
+//===- GraphMlirMinSpanningTreeBenchmark.cpp
 //----------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@
 #include <benchmark/benchmark.h>
 #include <Utility/Utils.h>
 
-#define V 100
+#define V 10
 #define MAX_WEIGHT 1000
 
 using namespace std;
@@ -69,5 +69,11 @@ void generateResultGraphMlirMinSpanningTree() {
   std::cout << "-------------------------------------------------------\n";
   std::cout << "[ GraphMLIR Minimum Spanning Tree Result Information ]\n";
   graph::min_spanning_tree(input, &output, &visited, &cost);
+
+  auto parent = output.getData();
+  for (int i = 0; i < V; i++) {
+    std::cout << "p[" << i << "] = " << parent[i] << ", ";
+  }
+
   std::cout << "GraphMLIR Minimum Spanning Tree operation finished!\n";
 }

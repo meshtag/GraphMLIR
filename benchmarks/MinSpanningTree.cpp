@@ -1,4 +1,4 @@
-//===- FloydWarshall.cpp --------------------------------------------------===//
+//===- MinSpanningTree.cpp --------------------------------------------------===//
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-//===----------------------------------------------------------------------===//
+//===-----------------------------------------------------------------------------------===//
 //
 // This file implements the benchmark for the naive implementation of Minimum Spanning Tree.
 //
-//===----------------------------------------------------------------------===//
+//===-----------------------------------------------------------------------------------===//
 
 #include <benchmark/benchmark.h>
 #include <cstring>
 #include <iostream>
-// #include <Utility/Utils.h>
 
 using namespace std;
 
-#define V 100
+#define V 10
 # define INF 1000
 
 namespace {
@@ -101,7 +100,7 @@ void generateResultMinSpanningTree() {
     minSpanningTree(input, output);
 
     for (int i = 0; i < V; i++) {
-        std::cout << output[i] << " ";
+        std::cout << "p[" << i << "] = " << output[i] << ", ";
     }
     std::cout << "\nMinimum Spanning Tree operation finished!\n";
 }

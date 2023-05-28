@@ -43,7 +43,6 @@ add_executable(graph-processing-benchmark
   BoostMinSpanningTree.cpp
   GraphMlirMinSpanningTree.cpp
   Main.cpp
-
 )
 
 

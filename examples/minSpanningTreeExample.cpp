@@ -1,4 +1,4 @@
-//====- floydWarshallExample.cpp =============================================//
+//====- minSpanningTreeExample.cpp =============================================//
 //
 // The graph.bfs operation will be compiled into an object file with the
 // graph-opt tool.
