@@ -51,7 +51,7 @@ void inline generateRandomGraph(Graph<float, 2> *graph, int vertices, int maxWei
         std::pair<int, int> p = std::make_pair(a, b);
         std::pair<int, int> reverse_p = std::make_pair(b, a);
 
-        while (container.find(p) != container.end() || container.find(reverse_p) != container.end())
+        while (container.find(p) != container.end() || container.find(reverse_p) != container.end() || a==b)
         {
             a = rand() % NUM;
             b = rand() % NUM;
@@ -63,6 +63,49 @@ void inline generateRandomGraph(Graph<float, 2> *graph, int vertices, int maxWei
         // int wt = 1 + rand() % MAXWEIGHT;
 
         graph->addEdge(a, b, 1 + rand() % maxWeight);
+    }
+    // for (it=container.begin(); it!=container.end(); ++it)
+    //     printf("%d %d\n", it->first, it->second);
+            
+    container.clear();
+    printf("\n");           
+//  return graph;
+    // }
+}
+
+void inline generateRandomGraphI(Graph<int, 2> *graph, int vertices){
+    // printf("Inside the function create_graph\n");
+    std::set<std::pair<int, int>> container;
+    std::set<std::pair<int, int>>::iterator it;
+    // printf("Inside the function create_graph 1\n");
+    srand(time(NULL));
+    // printf("Inside the function create_graph 2\n");
+    int NUM = vertices;    // Number of Vertices
+    int MAX_EDGES = vertices * (vertices-1) /2;
+    int NUMEDGE = MAX_EDGES; // Number of Edges
+    
+        
+    // Then print the edges of the form (a b)
+    // where 'a' is connected to 'b'
+    for (int j=1; j<=NUMEDGE; j++)
+    {            
+        int a = rand() % NUM;
+        int b = rand() % NUM;
+        std::pair<int, int> p = std::make_pair(a, b);
+        std::pair<int, int> reverse_p = std::make_pair(b, a);
+
+        while (container.find(p) != container.end() || container.find(reverse_p) != container.end() || a==b)
+        {
+            a = rand() % NUM;
+            b = rand() % NUM;
+            p = std::make_pair(a, b);
+            reverse_p = std::make_pair(b,a);
+        }
+
+        container.insert(p);
+        // int wt = 1 + rand() % MAXWEIGHT;
+
+        graph->addEdge(a, b, 1 + rand() % 1000);
     }
     // for (it=container.begin(); it!=container.end(); ++it)
     //     printf("%d %d\n", it->first, it->second);

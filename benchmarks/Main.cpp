@@ -24,11 +24,19 @@ void initializeGraphMLIRFloydWarshall();
 void initializeFloydWarshall();
 void initializeLemonBFS();
 void initializeBoostFLoydWarshall();
+void initializeMinSpanningTree();
+void initializeBoostMinSpanningTree();
+void initializeLemonMinSpanningTree();
+void initializeGraphMlirMinSpanningTree();
 
 void generateResultGraphMLIRFloydWarshall();
 void generateResultFloydWarshall();
 void generateResultLemonBFS();
 void generateResultBoostFLoydWarshall();
+void generateResultMinSpanningTree();
+void generateResultBoostMinSpanningTree();
+void generateResultLemonMinSpanningTree();
+void generateResultGraphMlirMinSpanningTree();
 
 int main(int argc, char **argv) {
 
@@ -36,6 +44,10 @@ int main(int argc, char **argv) {
   initializeFloydWarshall();
   initializeLemonBFS();
   initializeBoostFLoydWarshall();
+  initializeMinSpanningTree();
+  initializeBoostMinSpanningTree();
+  initializeLemonMinSpanningTree();
+  initializeGraphMlirMinSpanningTree();
 
   ::benchmark::Initialize(&argc, argv);
   ::benchmark::RunSpecifiedBenchmarks();
@@ -44,5 +56,10 @@ int main(int argc, char **argv) {
   generateResultFloydWarshall();
   generateResultLemonBFS();
   generateResultBoostFLoydWarshall();
+  generateResultMinSpanningTree();
+  generateResultBoostMinSpanningTree();
+  generateResultLemonMinSpanningTree();
+  generateResultGraphMlirMinSpanningTree();
+
   return 0;
 }

@@ -26,6 +26,7 @@
 #include "mlir/Dialect/MemRef/IR/MemRef.h"
 #include "mlir/Dialect/Vector/IR/VectorOps.h"
 #include "mlir/Pass/Pass.h"
+#include "mlir/IR/ImplicitLocOpBuilder.h"
 
 #include "Graph/GraphDialect.h"
 #include "Graph/GraphOps.h"
@@ -162,12 +163,141 @@ private:
   int64_t stride;
 };
 
+class GraphMinSpanningTreeLowering : public OpRewritePattern<graph::MinSpanningTreeOp> {
+public:
+  using OpRewritePattern<graph::MinSpanningTreeOp>::OpRewritePattern;
+
+  explicit GraphMinSpanningTreeLowering(MLIRContext *context, int64_t strideParam)
+      : OpRewritePattern(context) {
+    stride = strideParam;
+  }
+
+  LogicalResult matchAndRewrite(graph::MinSpanningTreeOp op,
+                                PatternRewriter &rewriter) const override {
+    auto loc = op->getLoc();
+    auto ctx = op->getContext();
+    
+    /* operands */
+    Value input = op->getOperand(0);
+    Value output = op->getOperand(1);
+    Value visited = op->getOperand(2);
+    Value cost = op->getOperand(3);
+    
+    /* types */
+    IndexType idx = IndexType::get(ctx);
+    IntegerType i32 = IntegerType::get(ctx, 32);
+
+    /* constants */
+    Value c0 = rewriter.create<arith::ConstantIndexOp>(loc, 0);
+    Value c1 = rewriter.create<arith::ConstantIndexOp>(loc, 1);
+    Value zeroI = rewriter.create<arith::ConstantIntOp>(loc, int(0), i32);
+    Value oneI = rewriter.create<arith::ConstantIntOp>(loc, int(1), i32);
+    Value minusOneI = rewriter.create<arith::ConstantIntOp>(loc, int(-1), i32);
+    Value minusTwoI = rewriter.create<arith::ConstantIntOp>(loc, int(-2), i32);
+    Value maxI = rewriter.create<arith::ConstantIntOp>(loc, int(1001), i32);
+
+    /* loop bounds */
+    Value V = rewriter.create<memref::DimOp>(loc, input, c0);
+    Value vAsInt = rewriter.create<IndexCastOp>(loc, i32, V);
+    // since MST has V-1 edges
+    Value eAsInt = rewriter.create<arith::AddIOp>(loc, vAsInt, minusOneI);
+    Value E = rewriter.create<IndexCastOp>(loc, rewriter.getIndexType(), eAsInt);
+
+    /* initial condition */
+    // parent of root is root itself
+    rewriter.create<memref::StoreOp>(loc, zeroI, output, c0);
+  
+    // loop through V-1 times since MST will have at least V-1 edges
+    rewriter.create<scf::ForOp>(
+      loc, c0, E, c1, ValueRange{},
+      [&](OpBuilder &builder, Location loc, Value inductionVar, ValueRange iterArgs) {
+        Value minCost = maxI;
+        Value minIndex = minusTwoI;
+
+        // finding the minimum weighted edge
+        scf::ForOp forOp = builder.create<scf::ForOp>(
+          loc, c0, V, c1, ValueRange{cost, visited, minIndex, minCost},
+          [&](OpBuilder &builder, Location loc, Value iv, ValueRange args) {
+            Value cost = args[0];
+            Value visited = args[1];
+            Value minIndex = args[2];
+            Value minCost = args[3];
+
+            Value costArg = builder.create<memref::LoadOp>(loc, cost, iv);
+            Value visitedArg = builder.create<memref::LoadOp>(loc, visited, iv);
+
+            // if vertex is unvisited and cost is lesser than current minimum cost
+            Value visitedCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::eq, visitedArg, zeroI);
+            Value costCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::slt, costArg, minCost);
+            Value condition = builder.create<AndIOp>(loc, visitedCondition, costCondition);
+
+            scf::IfOp ifOp = builder.create<scf::IfOp>(loc, TypeRange{i32, i32}, condition,
+              [&](OpBuilder &builder, Location loc) {
+                Value temp = builder.create<IndexCastOp>(loc, i32, iv);
+                builder.create<scf::YieldOp>(loc, ValueRange{temp, costArg});
+              },
+              // else block
+              [&](OpBuilder &builder, Location loc) {
+                builder.create<scf::YieldOp>(loc, ValueRange{minIndex, minCost});
+              });
+            minIndex = ifOp.getResult(0);
+            minCost = ifOp.getResult(1);
+
+            builder.create<scf::YieldOp>(loc, ValueRange{cost, visited, minIndex, minCost});
+          });
+        Value minIndexFoundAsInt = forOp.getResult(2);
+        Value minIndexFound = builder.create<IndexCastOp>(loc, builder.getIndexType(), minIndexFoundAsInt);
+ 
+        // mark vertex as visited
+        builder.create<memref::StoreOp>(loc, oneI, visited, minIndexFound);
+        
+        // adding the edge to output and updating weights
+        builder.create<scf::ForOp>(
+          loc, c0, V, c1, ValueRange{cost, visited, minIndexFound},
+          [&](OpBuilder &builder, Location loc, Value iv, ValueRange args) {
+            Value costVal = args[0];
+            Value visited = args[1];
+            Value minIndex = args[2];
+
+            Value costArg = builder.create<memref::LoadOp>(loc, cost, iv);
+            Value visitedArg = builder.create<memref::LoadOp>(loc, visited, iv);
+            Value weight = builder.create<memref::LoadOp>(loc, input, ValueRange{minIndex, iv});
+
+            // if vertex is unvisited, edge between current vertex and minIndex vertex exists, and edge weight is lesser than current cost for that vertex
+            Value visitedCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::eq, visitedArg, zeroI);
+            Value costCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::slt, weight, costArg);
+            Value existsCondition = builder.create<arith::CmpIOp>(loc, arith::CmpIPredicate::ne, weight, zeroI);
+            Value condition = builder.create<AndIOp>(loc, existsCondition, builder.create<AndIOp>(loc, visitedCondition, costCondition));
+            
+            builder.create<scf::IfOp>(loc, condition,
+            [&](OpBuilder &builder, Location loc) {
+              Value minIndexAsInt = builder.create<IndexCastOp>(loc, i32, minIndex);
+              builder.create<memref::StoreOp>(loc, minIndexAsInt, output, iv);
+              builder.create<memref::StoreOp>(loc, weight, cost, iv);
+              builder.create<scf::YieldOp>(loc);
+            });
+
+          builder.create<scf::YieldOp>(loc, ValueRange{cost, visited, minIndex});
+          });
+
+        builder.create<scf::YieldOp>(loc);
+      });
+
+    rewriter.eraseOp(op);
+    return success();
+  }
+
+private:
+  int64_t stride;
+};
+
 } // end anonymous namespace
 
 void populateLowerGraphConversionPatterns(RewritePatternSet &patterns,
                                           int64_t stride) {
   patterns.add<GraphBFSLowering>(patterns.getContext(), stride);
   patterns.add<GraphFloydWarshallLowering>(patterns.getContext(), stride);
+  patterns.add<GraphMinSpanningTreeLowering>(patterns.getContext(), stride);
 }
 
 //===----------------------------------------------------------------------===//
